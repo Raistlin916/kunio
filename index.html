@@ -22,6 +22,15 @@
             kunio = game.add.sprite(200, 200, 'kunio');
             kunio.animations.add('left', [0,1,2]);
             kunio.animations.add('right', [3,4,5]);
+            
+            game.physics.startSystem(Phaser.Physics.ARCADE);
+            game.physics.arcade.gravity.y = 500;
+            
+            game.physics.arcade.enable(kunio);
+            kunio.body.velocity.y = 100;
+            
+            kunio.body.collideWorldBounds = true;
+            kunio.body.bounce.set(0.2);
         }
         
         function update () {
@@ -35,6 +44,10 @@
                 kunio.animations.play('right', 15, true);
             } else {
                 kunio.animations.stop();
+            }
+            
+            if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
+                kunio.body.velocity.y += 1500;
             }
         }
     })();
