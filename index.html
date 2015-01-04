@@ -10,12 +10,13 @@
     <script>
         
     (function(){
-        var game = new Phaser.Game(400, 300, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update });
+        var game = new Phaser.Game(320, 300, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update });
         
-        var kunio;
+        var kunio, platforms;
         
         function preload () {
             game.load.atlasJSONHash('kunio', 'asserts/kunio.png', 'asserts/kunio.json');
+            game.load.image('tile', 'asserts/tile.png');
         }
         
         function create () {
@@ -25,17 +26,27 @@
             kunio.animations.add('right', [3,4,5]);
             
             game.physics.startSystem(Phaser.Physics.ARCADE);
-            game.physics.arcade.gravity.y = 500;
             
             game.physics.arcade.enable(kunio);
+            kunio.body.gravity.y = 500;
             kunio.body.velocity.y = 100;
-            
             kunio.body.collideWorldBounds = true;
+            
             kunio.body.bounce.set(0.2);
+            
+            platforms = game.add.group();
+            
+            platforms.enableBody = true;
+            
+            var ground = platforms.create(200, game.world.height-50, 'tile');
+            ground.body.immovable = true;
+            
+            var ground2 = platforms.create(216, game.world.height-50, 'tile');
+            ground2.body.immovable = true;
         }
         
         function update () {
-
+            game.physics.arcade.collide(kunio, platforms);
             
             if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
                 kunio.x -= 2;
@@ -47,10 +58,12 @@
                 kunio.animations.stop();
             }
             
-            if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
-                kunio.body.velocity.y += 1500;
+            if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && kunio.body.touching.down) {
+                kunio.body.velocity.y = -150;
             }
         }
+        
+     
     })();
     
     </script>
