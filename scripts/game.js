@@ -1,10 +1,12 @@
+import {Orientation, screenDims} from './utils/screen_utils';
+
 export default class Game {
     
     create () {
         this.world.setBounds(0, 0, 1280, 600);
     
         this.bgtile = this.add.tileSprite(0, 0, this.world.width, this.world.height, 'bg');
-        this.bgtile.tilePosition = {x: 0, y: 1000 - this.world.height};
+        this.bgtile.tilePosition = { x: 0, y: this.world.height };
         this.bgtile.fixedToCamera = true;
     
         

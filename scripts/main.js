@@ -1,10 +1,15 @@
 /* global Phaser */
 import Boot from './boot';
 import Preloader from './preloader';
-import Game from './game'
+import Game from './game';
+import ScreenUtils, {Orientation} from './utils/screen_utils';
 
-//var game = new Phaser.Game(1024, 768, Phaser.AUTO, 'kunio');
-var game = new Phaser.Game(600, 400, Phaser.AUTO, 'kunio');
+    
+let screenDims = ScreenUtils.calculateScreenMetrics(800, 500, Orientation.LANDSCAPE);
+
+
+let game = new Phaser.Game(screenDims.gameWidth, screenDims.gameHeight, Phaser.AUTO, 'kunio');
+
 
 game.state.add('Boot', Boot);
 game.state.add('Preloader', Preloader);
