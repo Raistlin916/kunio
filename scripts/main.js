@@ -13,7 +13,7 @@ function preload () {
 
 function create () {
     bgtile = game.add.tileSprite(0, 0, game.world.width, game.world.height, 'bg');
-    bgtile.tilePosition.y = game.world.height - 1000;
+    bgtile.tilePosition.y = game.world.height;
     bgtile.fixedToCamera = true;
 
     game.world.setBounds(0, 0, 1280, 600);
