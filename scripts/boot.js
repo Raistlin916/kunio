@@ -1,7 +1,7 @@
 import {Orientation, screenDims} from './utils/screen_utils';
 
 export default class Boot {
-    init () {
+    init (game) {
         this.input.maxPointers = 1;
         this.stage.disableVisibilityChange = false;
 
