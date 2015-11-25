@@ -28,13 +28,15 @@ export default class Game {
         this.physics.arcade.enable(this.player);
         this.player.body.collideWorldBounds = true;
         this.player.body.bounce.set(0.2);
-        this.player.position.set(0, this.world.height);
+        this.player.position.set(0, this.world.height-200);
         
         this.platforms = this.add.physicsGroup();
         
-        
-        this.platforms.create(200, this.world.height-50, 'tile');
-        this.platforms.create(216, this.world.height-50, 'tile');
+        for (let i = 0; i < 10; i++) {
+            let x = i * 250;
+            let y = this.world.height - 50 - this.rnd.between(0, 50);
+            this.platforms.create(x, y, ~~this.rnd.between(0, 2) == 1 ? 'platform' : 'platform_ice');
+        }
 
         
         this.platforms.setAll('body.allowGravity', false);
@@ -46,9 +48,12 @@ export default class Game {
         });
     }
     
+    
     update () {
         this.physics.arcade.collide(this.player, this.platforms);
         this.bgtile.tilePosition.x = -(this.camera.x * 0.1);
+        
+        this.physics.arcade.collide(this.player, this.platforms, this.setFriction, null, this);
         
         this.player.body.velocity.x = 0;
         
@@ -66,6 +71,12 @@ export default class Game {
         
         if(this.keys.spacebar.isDown && standing) {
             this.player.body.velocity.y = -300;
+        }
+    }
+    
+    setFriction (player, platform) {
+        if (platform.key === 'platform_ice') {
+            
         }
     }
 }
