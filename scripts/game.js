@@ -6,7 +6,9 @@ export default class Game {
         this.world.setBounds(0, 0, 1280, 600);
     
         this.bgtile = this.add.tileSprite(0, 0, this.world.width, this.world.height, 'bg');
-        this.bgtile.tilePosition = { x: 0, y: this.world.height };
+        this.bgtile.tilePosition.set(0, this.world.height);
+        this.bgtile.position.set(0, this.world.height);
+        this.bgtile.anchor.set(0, 1);
         this.bgtile.fixedToCamera = true;
     
         

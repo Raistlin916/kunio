@@ -4,7 +4,7 @@ export default class Boot {
     init () {
         this.input.maxPointers = 1;
         this.stage.disableVisibilityChange = false;
-console.log(screenDims.scaleY);
+
         if (this.game.device.desktop) {
             this.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
             this.scale.setUserScale(screenDims.scaleX, screenDims.scaleY);
