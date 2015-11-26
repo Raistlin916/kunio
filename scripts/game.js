@@ -23,14 +23,15 @@ export default class Game {
         
         this.player.animations.add('standing', [0,1,2,3], 10, true);
         this.player.animations.add('walk', [4,5,6,7,8,9,10], 10, true);
-        this.player.animations.add('jump', [14,15,16], 4, true);
+        this.player.animations.add('jump_up', [14,15], 4, false);
+        this.player.animations.add('jump_down', [16,17], 4, false);
         this.player.smoothed = false;
         
         this.camera.follow(this.player);
         
         this.physics.arcade.enable(this.player);
         this.player.body.collideWorldBounds = true;
-        this.player.body.bounce.set(0.2);
+        //this.player.body.bounce.set(0.2);
         this.player.position.set(0, this.world.height-200);
         
         this.platforms = this.add.physicsGroup();
@@ -75,13 +76,17 @@ export default class Game {
             standing && this.player.animations.play('standing');
         }
         
+        if (!standing) {
+            this.player.animations.play('jump_' + (this.player.body.velocity.y > 0 ? 'down' : 'up') );
+        }
+        
         if(this.keys.spacebar.isDown && standing) {
             this.player.body.velocity.y = -300;
             this.player.animations.play('jump');
         }
         
-        
         this.player.scale.x = this.facing == 'left' ? -1 : 1;
+        //this.player.anchor.x = .5;
     }
     
     setFriction (player, platform) {
