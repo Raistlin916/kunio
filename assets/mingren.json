@@ -1,0 +1,104 @@
+{
+"frames": {
+	"Image 1 at frame 0.png": {
+		"frame": {"x":157, "y":0, "w":35, "h":52},
+		"spriteSourceSize": {"x":3,"y":1,"w":39,"h":54},
+		"sourceSize": {"w":39,"h":54}
+	},
+	"Image 2 at frame 0.png": {
+		"frame": {"x":119, "y":95, "w":37, "h":52},
+		"spriteSourceSize": {"x":1,"y":1,"w":39,"h":54},
+		"sourceSize": {"w":39,"h":54}
+	},
+	"Image 3 at frame 0.png": {
+		"frame": {"x":120, "y":0, "w":36, "h":50},
+		"spriteSourceSize": {"x":2,"y":3,"w":39,"h":54},
+		"sourceSize": {"w":39,"h":54}
+	},
+	"Image 4 at frame 0.png": {
+		"frame": {"x":157, "y":53, "w":35, "h":51},
+		"spriteSourceSize": {"x":3,"y":2,"w":39,"h":54},
+		"sourceSize": {"w":39,"h":54}
+	},
+	"Image 5 at frame 0.png": {
+		"frame": {"x":119, "y":148, "w":37, "h":47},
+		"spriteSourceSize": {"x":3,"y":1,"w":42,"h":50},
+		"sourceSize": {"w":42,"h":50}
+	},
+	"Image 6 at frame 0.png": {
+		"frame": {"x":0, "y":84, "w":40, "h":46},
+		"spriteSourceSize": {"x":1,"y":3,"w":42,"h":50},
+		"sourceSize": {"w":42,"h":50}
+	},
+	"Image 7 at frame 0.png": {
+		"frame": {"x":50, "y":0, "w":38, "h":46},
+		"spriteSourceSize": {"x":1,"y":3,"w":42,"h":50},
+		"sourceSize": {"w":42,"h":50}
+	},
+	"Image 8 at frame 0.png": {
+		"frame": {"x":157, "y":158, "w":32, "h":46},
+		"spriteSourceSize": {"x":8,"y":3,"w":42,"h":50},
+		"sourceSize": {"w":42,"h":50}
+	},
+	"Image 9 at frame 0.png": {
+		"frame": {"x":81, "y":47, "w":38, "h":47},
+		"spriteSourceSize": {"x":2,"y":2,"w":42,"h":50},
+		"sourceSize": {"w":42,"h":50}
+	},
+	"Image 10 at frame 0.png": {
+		"frame": {"x":41, "y":84, "w":39, "h":46},
+		"spriteSourceSize": {"x":1,"y":2,"w":42,"h":50},
+		"sourceSize": {"w":42,"h":50}
+	},
+	"Image 11 at frame 0.png": {
+		"frame": {"x":80, "y":131, "w":38, "h":46},
+		"spriteSourceSize": {"x":1,"y":2,"w":42,"h":50},
+		"sourceSize": {"w":42,"h":50}
+	},
+	"Image 12 at frame 0.png": {
+		"frame": {"x":0, "y":42, "w":47, "h":41},
+		"spriteSourceSize": {"x":4,"y":2,"w":52,"h":45},
+		"sourceSize": {"w":52,"h":45}
+	},
+	"Image 13 at frame 0.png": {
+		"frame": {"x":0, "y":0, "w":49, "h":41},
+		"spriteSourceSize": {"x":2,"y":2,"w":52,"h":45},
+		"sourceSize": {"w":52,"h":45}
+	},
+	"Image 14 at frame 0.png": {
+		"frame": {"x":120, "y":51, "w":33, "h":43},
+		"spriteSourceSize": {"x":5,"y":29,"w":45,"h":73},
+		"sourceSize": {"w":45,"h":73}
+	},
+	"Image 15 at frame 0.png": {
+		"frame": {"x":0, "y":131, "w":39, "h":51},
+		"spriteSourceSize": {"x":5,"y":12,"w":45,"h":73},
+		"sourceSize": {"w":45,"h":73}
+	},
+	"Image 16 at frame 0.png": {
+		"frame": {"x":40, "y":131, "w":39, "h":51},
+		"spriteSourceSize": {"x":5,"y":1,"w":45,"h":73},
+		"sourceSize": {"w":45,"h":73}
+	},
+	"Image 17 at frame 0.png": {
+		"frame": {"x":157, "y":105, "w":34, "h":52},
+		"spriteSourceSize": {"x":1,"y":1,"w":45,"h":73},
+		"sourceSize": {"w":45,"h":73}
+	},
+	"Image 18 at frame 0.png": {
+		"frame": {"x":120, "y":51, "w":33, "h":43},
+		"spriteSourceSize": {"x":5,"y":29,"w":45,"h":73},
+		"sourceSize": {"w":45,"h":73}
+	},
+	"Image 19 at frame 0.png": {
+		"frame": {"x":81, "y":95, "w":34, "h":35},
+		"spriteSourceSize": {"x":4,"y":37,"w":45,"h":73},
+		"sourceSize": {"w":45,"h":73}
+	}
+},
+"meta": {
+	"image": "mingren.png",
+	"size": {"w": 193, "h": 205},
+	"scale": "1"
+}
+}

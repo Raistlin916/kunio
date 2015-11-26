@@ -1,0 +1,27 @@
+{
+  "name": "runner",
+  "version": "1.0.0",
+  "description": "kunio =====",
+  "main": "webpack.config.js",
+  "dependencies": {
+    "babel-loader": "^6.2.0",
+    "babel-preset-es2015": "^6.1.18",
+    "webpack": "^1.12.9",
+    "babel-core": "^6.2.1",
+    "webpack-dev-server": "^1.12.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "webpack-dev-server --host $IP --port $PORT  --hot --inline"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/raistlin916/kunio.git"
+  },
+  "author": "gaok",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/raistlin916/kunio/issues"
+  },
+  "homepage": "https://github.com/raistlin916/kunio#readme"
+}

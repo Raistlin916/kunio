@@ -18,10 +18,13 @@ export default class Game {
         this.bgtile.fixedToCamera = true;
     
         
-        this.player = this.add.sprite(200, 200, 'kunio');
-        this.player.animations.add('left', [0,1,2], 10, true);
-        this.player.animations.add('right', [3,4,5], 10, true);
+        this.player = this.add.sprite(200, 200, 'mingren');
+        this.player.anchor.set(.5, 1);
         
+        this.player.animations.add('standing', [0,1,2,3], 10, true);
+        this.player.animations.add('walk', [4,5,6,7,8,9,10], 10, true);
+        this.player.animations.add('jump', [14,15,16], 4, true);
+        this.player.smoothed = false;
         
         this.camera.follow(this.player);
         
@@ -58,20 +61,27 @@ export default class Game {
         this.player.body.velocity.x = 0;
         
         let standing = this.player.body.blocked.down || this.player.body.touching.down;
-    
+        
+
         if (this.cursors.left.isDown) {
             this.player.body.velocity.x = -200;
-            this.player.animations.play('left');
+            this.facing = 'left';
+            standing && this.player.animations.play('walk');
         } else if(this.cursors.right.isDown) {
             this.player.body.velocity.x = 200;
-            this.player.animations.play('right');
+            this.facing = 'right';
+            standing && this.player.animations.play('walk');
         } else {
-            this.player.animations.stop();
+            standing && this.player.animations.play('standing');
         }
         
         if(this.keys.spacebar.isDown && standing) {
             this.player.body.velocity.y = -300;
+            this.player.animations.play('jump');
         }
+        
+        
+        this.player.scale.x = this.facing == 'left' ? -1 : 1;
     }
     
     setFriction (player, platform) {
