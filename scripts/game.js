@@ -35,16 +35,23 @@ export default class Game {
         this.player.position.set(0, this.world.height-200);
         
         this.platforms = this.add.physicsGroup();
-        
         for (let i = 0; i < 10; i++) {
             let x = i * 250;
             let y = this.world.height - 50 - this.rnd.between(0, 50);
             this.platforms.create(x, y, ~~this.rnd.between(0, 2) == 1 ? 'platform' : 'platform_ice');
         }
-
-        
         this.platforms.setAll('body.allowGravity', false);
         this.platforms.setAll('body.immovable', true);
+        
+        this.coinsGroup = this.add.group();
+        for (let i = 0; i < 10; i++) {
+            let x = i * 30 + 100;
+            let y = this.world.height - 200;
+            this.coinsGroup.create(x, y, 'coin');
+        }
+        this.coinsGroup.callAll('animations.add', 'animations', 'flash');
+        this.coinsGroup.callAll('play', null, 'flash', 10, true);
+        
         
         this.cursors = this.input.keyboard.createCursorKeys();
         this.keys = this.input.keyboard.addKeys({
