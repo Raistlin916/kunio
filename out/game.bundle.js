@@ -34,7 +34,7 @@
 /******/ 	__webpack_require__.c = installedModules;
 
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/public/";
+/******/ 	__webpack_require__.p = "/out/";
 
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(0);
@@ -293,6 +293,7 @@
 	        value: function preload() {
 	            this.load.atlasJSONHash('kunio', 'assets/kunio.png', 'assets/kunio.json');
 	            this.load.atlasJSONHash('mingren', 'assets/mingren.png', 'assets/mingren.json');
+	            this.load.spritesheet('coin', 'assets/coin.png', 24, 24);
 	            this.load.image('tile', 'assets/tile.png');
 	            this.load.image('bg', 'assets/bg.jpg');
 	            this.load.image('platform', 'assets/platform.png');
@@ -366,15 +367,22 @@
 	            this.player.position.set(0, this.world.height - 200);
 
 	            this.platforms = this.add.physicsGroup();
-
 	            for (var i = 0; i < 10; i++) {
 	                var x = i * 250;
 	                var y = this.world.height - 50 - this.rnd.between(0, 50);
 	                this.platforms.create(x, y, ~ ~this.rnd.between(0, 2) == 1 ? 'platform' : 'platform_ice');
 	            }
-
 	            this.platforms.setAll('body.allowGravity', false);
 	            this.platforms.setAll('body.immovable', true);
+
+	            this.coinsGroup = this.add.group();
+	            for (var i = 0; i < 10; i++) {
+	                var x = i * 30 + 100;
+	                var y = this.world.height - 200;
+	                this.coinsGroup.create(x, y, 'coin');
+	            }
+	            this.coinsGroup.callAll('animations.add', 'animations', 'flash');
+	            this.coinsGroup.callAll('play', null, 'flash', 10, true);
 
 	            this.cursors = this.input.keyboard.createCursorKeys();
 	            this.keys = this.input.keyboard.addKeys({
