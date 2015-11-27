@@ -298,6 +298,7 @@
 	            this.load.image('bg', 'assets/bg.jpg');
 	            this.load.image('platform', 'assets/platform.png');
 	            this.load.image('platform_ice', 'assets/platform_ice.png');
+	            this.load.bitmapFont('carrier_command', 'assets/carrier_command.png', 'assets/carrier_command.xml');
 	        }
 	    }, {
 	        key: 'create',
@@ -340,6 +341,7 @@
 	            this.physics.arcade.skipQuadTree = false;
 	            this.game.renderer.renderSession.roundPixels = true;
 	            this.world.resize(2000, 600);
+	            this.score = 0;
 	        }
 	    }, {
 	        key: 'create',
@@ -375,19 +377,24 @@
 	            this.platforms.setAll('body.allowGravity', false);
 	            this.platforms.setAll('body.immovable', true);
 
-	            this.coinsGroup = this.add.group();
+	            this.coinsGroup = this.add.physicsGroup();
 	            for (var i = 0; i < 10; i++) {
 	                var x = i * 30 + 100;
-	                var y = this.world.height - 200;
+	                var y = this.world.height - 150;
 	                this.coinsGroup.create(x, y, 'coin');
 	            }
 	            this.coinsGroup.callAll('animations.add', 'animations', 'flash');
 	            this.coinsGroup.callAll('play', null, 'flash', 10, true);
+	            this.coinsGroup.setAll('body.allowGravity', false);
+	            this.coinsGroup.setAll('body.immovable', true);
 
 	            this.cursors = this.input.keyboard.createCursorKeys();
 	            this.keys = this.input.keyboard.addKeys({
 	                spacebar: Phaser.Keyboard.SPACEBAR
 	            });
+
+	            this.scoreText = this.add.bitmapText(10, this.world.height - this.camera.height + 10, 'carrier_command', 'score:' + this.score, 18);
+	            this.scoreText.tint = 0x223344;
 	        }
 	    }, {
 	        key: 'update',
@@ -396,6 +403,7 @@
 	            this.bgtile.tilePosition.x = -(this.camera.x * 0.1);
 
 	            this.physics.arcade.collide(this.player, this.platforms, this.setFriction, null, this);
+	            this.physics.arcade.overlap(this.player, this.coinsGroup, this.eatCoin, null, this);
 
 	            this.player.body.velocity.x = 0;
 
@@ -423,11 +431,18 @@
 	            }
 
 	            this.player.scale.x = this.facing == 'left' ? -1 : 1;
+	            this.scoreText.setText('score:' + this.score);
 	        }
 	    }, {
 	        key: 'setFriction',
 	        value: function setFriction(player, platform) {
 	            if (platform.key === 'platform_ice') {}
+	        }
+	    }, {
+	        key: 'eatCoin',
+	        value: function eatCoin(player, coin) {
+	            coin.kill();
+	            this.score += 10;
 	        }
 	    }]);
 

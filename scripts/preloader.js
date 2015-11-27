@@ -7,6 +7,7 @@ export default class Preloader {
         this.load.image('bg', 'assets/bg.jpg');
         this.load.image('platform', 'assets/platform.png');
         this.load.image('platform_ice', 'assets/platform_ice.png');
+        this.load.bitmapFont('carrier_command', 'assets/carrier_command.png', 'assets/carrier_command.xml');
     }
     create () {
         this.state.start('Game');

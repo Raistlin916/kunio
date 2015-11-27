@@ -8,6 +8,7 @@ export default class Game {
         this.physics.arcade.skipQuadTree = false;
         this.game.renderer.renderSession.roundPixels = true;
         this.world.resize(2000, 600);
+        this.score = 0;
     }
     
     create () {
@@ -43,20 +44,25 @@ export default class Game {
         this.platforms.setAll('body.allowGravity', false);
         this.platforms.setAll('body.immovable', true);
         
-        this.coinsGroup = this.add.group();
+        this.coinsGroup = this.add.physicsGroup();
         for (let i = 0; i < 10; i++) {
             let x = i * 30 + 100;
-            let y = this.world.height - 200;
+            let y = this.world.height - 150;
             this.coinsGroup.create(x, y, 'coin');
         }
         this.coinsGroup.callAll('animations.add', 'animations', 'flash');
         this.coinsGroup.callAll('play', null, 'flash', 10, true);
+        this.coinsGroup.setAll('body.allowGravity', false);
+        this.coinsGroup.setAll('body.immovable', true);
         
         
         this.cursors = this.input.keyboard.createCursorKeys();
         this.keys = this.input.keyboard.addKeys({
             spacebar: Phaser.Keyboard.SPACEBAR
         });
+        
+        this.scoreText = this.add.bitmapText(10, this.world.height - this.camera.height + 10, 'carrier_command','score:' + this.score, 18);
+        this.scoreText.tint = 0x223344;
     }
     
     
@@ -65,6 +71,7 @@ export default class Game {
         this.bgtile.tilePosition.x = -(this.camera.x * 0.1);
         
         this.physics.arcade.collide(this.player, this.platforms, this.setFriction, null, this);
+        this.physics.arcade.overlap(this.player, this.coinsGroup, this.eatCoin, null, this);
         
         this.player.body.velocity.x = 0;
         
@@ -93,6 +100,7 @@ export default class Game {
         }
         
         this.player.scale.x = this.facing == 'left' ? -1 : 1;
+        this.scoreText.setText('score:' + this.score);
     }
     
     setFriction (player, platform) {
@@ -100,4 +108,11 @@ export default class Game {
             
         }
     }
+    
+    eatCoin (player, coin) {
+        coin.kill();
+        this.score += 10;
+    }
+    
+    
 }
