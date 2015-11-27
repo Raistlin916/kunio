@@ -292,6 +292,7 @@
 	        key: 'preload',
 	        value: function preload() {
 	            this.load.atlasJSONHash('kunio', 'assets/kunio.png', 'assets/kunio.json');
+	            this.load.atlasJSONHash('mingren', 'assets/mingren.png', 'assets/mingren.json');
 	            this.load.image('tile', 'assets/tile.png');
 	            this.load.image('bg', 'assets/bg.jpg');
 	            this.load.image('platform', 'assets/platform.png');
@@ -348,15 +349,20 @@
 	            this.bgtile.anchor.set(0, 1);
 	            this.bgtile.fixedToCamera = true;
 
-	            this.player = this.add.sprite(200, 200, 'kunio');
-	            this.player.animations.add('left', [0, 1, 2], 10, true);
-	            this.player.animations.add('right', [3, 4, 5], 10, true);
+	            this.player = this.add.sprite(200, 200, 'mingren');
+	            this.player.anchor.set(.5, 1);
+
+	            this.player.animations.add('standing', [0, 1, 2, 3], 10, true);
+	            this.player.animations.add('walk', [4, 5, 6, 7, 8, 9, 10], 10, true);
+	            this.player.animations.add('jump_up', [14, 15], 4, false);
+	            this.player.animations.add('jump_down', [16, 17], 4, false);
+	            this.player.smoothed = false;
 
 	            this.camera.follow(this.player);
 
 	            this.physics.arcade.enable(this.player);
 	            this.player.body.collideWorldBounds = true;
-	            this.player.body.bounce.set(0.2);
+	            //this.player.body.bounce.set(0.2);
 	            this.player.position.set(0, this.world.height - 200);
 
 	            this.platforms = this.add.physicsGroup();
@@ -389,17 +395,26 @@
 
 	            if (this.cursors.left.isDown) {
 	                this.player.body.velocity.x = -200;
-	                this.player.animations.play('left');
+	                this.facing = 'left';
+	                standing && this.player.animations.play('walk');
 	            } else if (this.cursors.right.isDown) {
 	                this.player.body.velocity.x = 200;
-	                this.player.animations.play('right');
+	                this.facing = 'right';
+	                standing && this.player.animations.play('walk');
 	            } else {
-	                this.player.animations.stop();
+	                standing && this.player.animations.play('standing');
+	            }
+
+	            if (!standing) {
+	                this.player.animations.play('jump_' + (this.player.body.velocity.y > 0 ? 'down' : 'up'));
 	            }
 
 	            if (this.keys.spacebar.isDown && standing) {
 	                this.player.body.velocity.y = -300;
+	                this.player.animations.play('jump');
 	            }
+
+	            this.player.scale.x = this.facing == 'left' ? -1 : 1;
 	        }
 	    }, {
 	        key: 'setFriction',

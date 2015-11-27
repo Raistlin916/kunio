@@ -86,7 +86,6 @@ export default class Game {
         }
         
         this.player.scale.x = this.facing == 'left' ? -1 : 1;
-        //this.player.anchor.x = .5;
     }
     
     setFriction (player, platform) {
