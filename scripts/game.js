@@ -63,29 +63,47 @@ export default class Game {
         this.scoreText = this.add.bitmapText(10, 10, 'carrier_command','score:' + this.score, 18);
         this.scoreText.tint = 0x223344;
         this.scoreText.fixedToCamera = true;
-   
+        
+        this.isAlive = true;
     }
     
     
     update () {
-        this.physics.arcade.collide(this.player, this.platforms);
-        this.bgtile.tilePosition.x = -(this.camera.x * 0.01);
-        this.player.body.velocity.x = 200;
-        this.player.animations.play('walk');
+        this.bgtile.tilePosition.x = -(this.camera.x * 0.03);
+        
+        if (this.isAlive) {
+            this.player.body.velocity.x = 200;
+            this.player.animations.play('walk');
+        } else {
+            this.player.body.velocity.x = 0;
+            this.player.animations.play('standing'); 
+        }
+        
         
         this.physics.arcade.collide(this.player, this.platforms, this.setFriction, null, this);
         this.physics.arcade.overlap(this.player, this.coinsGroup, this.eatCoin, null, this);
         
         let standing = this.player.body.blocked.down || this.player.body.touching.down;
         
+        
         if (!standing) {
             this.player.animations.play('jump_' + (this.player.body.velocity.y > 0 ? 'down' : 'up') );
         }
         
-        if(this.keys.spacebar.isDown && standing) {
+        
+        if (this.keys.spacebar.isDown && standing) {
             this.player.body.velocity.y = -300;
         }
         
+        if (this.player.body.blocked.down) {
+            this.dead();
+        }
+        
+        
+    }
+    
+    dead () {
+        this.isAlive = false;
     }
     
     setFriction (player, platform) {
