@@ -7,7 +7,7 @@ export default class Game {
         this.physics.arcade.gravity.y = 750;
         this.physics.arcade.skipQuadTree = false;
         this.game.renderer.renderSession.roundPixels = true;
-        this.world.resize(2000, 600);
+        this.world.resize(10000, 600);
         this.score = 0;
     }
     
@@ -32,7 +32,6 @@ export default class Game {
         
         this.physics.arcade.enable(this.player);
         this.player.body.collideWorldBounds = true;
-        //this.player.body.bounce.set(0.2);
         this.player.position.set(0, this.world.height-200);
         
         this.platforms = this.add.physicsGroup();
@@ -61,34 +60,23 @@ export default class Game {
             spacebar: Phaser.Keyboard.SPACEBAR
         });
         
-        this.scoreText = this.add.bitmapText(10, this.world.height - this.camera.height + 10, 'carrier_command','score:' + this.score, 18);
+        this.scoreText = this.add.bitmapText(10, 10, 'carrier_command','score:' + this.score, 18);
         this.scoreText.tint = 0x223344;
+        this.scoreText.fixedToCamera = true;
+   
     }
     
     
     update () {
         this.physics.arcade.collide(this.player, this.platforms);
-        this.bgtile.tilePosition.x = -(this.camera.x * 0.1);
+        this.bgtile.tilePosition.x = -(this.camera.x * 0.01);
+        this.player.body.velocity.x = 200;
+        this.player.animations.play('walk');
         
         this.physics.arcade.collide(this.player, this.platforms, this.setFriction, null, this);
         this.physics.arcade.overlap(this.player, this.coinsGroup, this.eatCoin, null, this);
         
-        this.player.body.velocity.x = 0;
-        
         let standing = this.player.body.blocked.down || this.player.body.touching.down;
-        
-
-        if (this.cursors.left.isDown) {
-            this.player.body.velocity.x = -200;
-            this.facing = 'left';
-            standing && this.player.animations.play('walk');
-        } else if(this.cursors.right.isDown) {
-            this.player.body.velocity.x = 200;
-            this.facing = 'right';
-            standing && this.player.animations.play('walk');
-        } else {
-            standing && this.player.animations.play('standing');
-        }
         
         if (!standing) {
             this.player.animations.play('jump_' + (this.player.body.velocity.y > 0 ? 'down' : 'up') );
@@ -96,11 +84,8 @@ export default class Game {
         
         if(this.keys.spacebar.isDown && standing) {
             this.player.body.velocity.y = -300;
-            this.player.animations.play('jump');
         }
         
-        this.player.scale.x = this.facing == 'left' ? -1 : 1;
-        this.scoreText.setText('score:' + this.score);
     }
     
     setFriction (player, platform) {
@@ -112,6 +97,7 @@ export default class Game {
     eatCoin (player, coin) {
         coin.kill();
         this.score += 10;
+        this.scoreText.setText('score:' + this.score);
     }
     
     
