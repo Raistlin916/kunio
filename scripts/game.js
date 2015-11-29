@@ -20,7 +20,7 @@ export default class Game {
     
         
         this.player = this.add.sprite(200, 200, 'mingren');
-        this.player.anchor.set(.5, 1);
+        this.player.anchor.set(0, 1);
         
         this.player.animations.add('standing', [0,1,2,3], 10, true);
         this.player.animations.add('walk', [4,5,6,7,8,9,10], 10, true);
@@ -108,7 +108,9 @@ export default class Game {
     
     setFriction (player, platform) {
         if (platform.key === 'platform_ice') {
-            
+            this.player.body.velocity.x = 400;
+        } else {
+            this.player.body.velocity.x = 200;
         }
     }
     
