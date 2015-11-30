@@ -1,5 +1,28 @@
 import {Orientation, screenDims} from './utils/screen_utils';
 
+
+class GroupFactory {
+
+    constructor (group) {
+        this.group = group;
+    }
+
+    update (world, screenWidth) {
+        let right = this.group.x + this.group.width;
+        if (world.width - right > screenWidth) {
+            this.createOne();
+        }
+    }
+
+    getGroup () {
+        return this.group;
+    }
+
+    bindCreateMethod (cb) {
+        this.createOne = cb;
+    }
+}
+
 export default class Game {
     
     init () {
@@ -7,7 +30,8 @@ export default class Game {
         this.physics.arcade.gravity.y = 750;
         this.physics.arcade.skipQuadTree = false;
         this.game.renderer.renderSession.roundPixels = true;
-        this.world.resize(10000, 600);
+        this.originWidth = this.world.width;
+        this.world.resize(this.originWidth*2, 600);
         this.score = 0;
     }
     
@@ -20,7 +44,7 @@ export default class Game {
     
         
         this.player = this.add.sprite(200, 200, 'mingren');
-        this.player.anchor.set(0, 1);
+        this.player.anchor.set(1, 1);
         
         this.player.animations.add('standing', [0,1,2,3], 10, true);
         this.player.animations.add('walk', [4,5,6,7,8,9,10], 10, true);
@@ -63,15 +87,13 @@ export default class Game {
         this.scoreText = this.add.bitmapText(10, 10, 'carrier_command','score:' + this.score, 18);
         this.scoreText.tint = 0x223344;
         this.scoreText.fixedToCamera = true;
-        
-        this.isAlive = true;
     }
     
     
     update () {
         this.bgtile.tilePosition.x = -(this.camera.x * 0.03);
         
-        if (this.isAlive) {
+        if (this.player.alive) {
             this.player.body.velocity.x = 200;
             this.player.animations.play('walk');
         } else {
@@ -79,38 +101,41 @@ export default class Game {
             this.player.animations.play('standing'); 
         }
         
-        
-        this.physics.arcade.collide(this.player, this.platforms, this.setFriction, null, this);
+        let touchPlatform = false;
+        touchPlatform = this.physics.arcade.collide(this.player, this.platforms, this.setFriction, null, this);
         this.physics.arcade.overlap(this.player, this.coinsGroup, this.eatCoin, null, this);
         
-        let standing = this.player.body.blocked.down || this.player.body.touching.down;
-        
-        
+        let standing = this.player.body.blocked.down || touchPlatform;
         if (!standing) {
             this.player.animations.play('jump_' + (this.player.body.velocity.y > 0 ? 'down' : 'up') );
         }
         
-        
-        if (this.keys.spacebar.isDown && standing) {
+        if (this.keys.spacebar.isDown && standing && this.player.alive) {
             this.player.body.velocity.y = -300;
         }
         
-        if (this.player.body.blocked.down) {
-            this.dead();
+        // if (this.player.body.blocked.down) {
+        //     this.dead();
+        // }
+
+        this.platforms.children.forEach((item) => {
+            if (!item.inWorld) {
+                item.destroy();
+            }
+        });
+
+        if (this.world.width - this.player.x < this.originWidth) {
+            this.world.resize(this.world.width + this.originWidth, this.world.height);
         }
-        
-        
     }
     
     dead () {
-        this.isAlive = false;
+        this.player.alive = false;
     }
     
     setFriction (player, platform) {
         if (platform.key === 'platform_ice') {
-            this.player.body.velocity.x = 400;
-        } else {
-            this.player.body.velocity.x = 200;
+            this.player.body.velocity.x *= 1.8;
         }
     }
     

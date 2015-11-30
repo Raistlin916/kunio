@@ -328,6 +328,36 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+	var GroupFactory = (function () {
+	    function GroupFactory(group) {
+	        _classCallCheck(this, GroupFactory);
+
+	        this.group = group;
+	    }
+
+	    _createClass(GroupFactory, [{
+	        key: 'update',
+	        value: function update(world, screenWidth) {
+	            var right = this.group.x + this.group.width;
+	            if (world.width - right > screenWidth) {
+	                this.createOne();
+	            }
+	        }
+	    }, {
+	        key: 'getGroup',
+	        value: function getGroup() {
+	            return this.group;
+	        }
+	    }, {
+	        key: 'bindCreateMethod',
+	        value: function bindCreateMethod(cb) {
+	            this.createOne = cb;
+	        }
+	    }]);
+
+	    return GroupFactory;
+	})();
+
 	var Game = (function () {
 	    function Game() {
 	        _classCallCheck(this, Game);
@@ -340,7 +370,8 @@
 	            this.physics.arcade.gravity.y = 750;
 	            this.physics.arcade.skipQuadTree = false;
 	            this.game.renderer.renderSession.roundPixels = true;
-	            this.world.resize(10000, 600);
+	            this.originWidth = this.world.width;
+	            this.world.resize(this.originWidth * 2, 600);
 	            this.score = 0;
 	        }
 	    }, {
@@ -353,7 +384,7 @@
 	            this.bgtile.fixedToCamera = true;
 
 	            this.player = this.add.sprite(200, 200, 'mingren');
-	            this.player.anchor.set(.5, 1);
+	            this.player.anchor.set(1, 1);
 
 	            this.player.animations.add('standing', [0, 1, 2, 3], 10, true);
 	            this.player.animations.add('walk', [4, 5, 6, 7, 8, 9, 10], 10, true);
@@ -395,15 +426,13 @@
 	            this.scoreText = this.add.bitmapText(10, 10, 'carrier_command', 'score:' + this.score, 18);
 	            this.scoreText.tint = 0x223344;
 	            this.scoreText.fixedToCamera = true;
-
-	            this.isAlive = true;
 	        }
 	    }, {
 	        key: 'update',
 	        value: function update() {
 	            this.bgtile.tilePosition.x = -(this.camera.x * 0.03);
 
-	            if (this.isAlive) {
+	            if (this.player.alive) {
 	                this.player.body.velocity.x = 200;
 	                this.player.animations.play('walk');
 	            } else {
@@ -411,32 +440,44 @@
 	                this.player.animations.play('standing');
 	            }
 
-	            this.physics.arcade.collide(this.player, this.platforms, this.setFriction, null, this);
+	            var touchPlatform = false;
+	            touchPlatform = this.physics.arcade.collide(this.player, this.platforms, this.setFriction, null, this);
 	            this.physics.arcade.overlap(this.player, this.coinsGroup, this.eatCoin, null, this);
 
-	            var standing = this.player.body.blocked.down || this.player.body.touching.down;
-
+	            var standing = this.player.body.blocked.down || touchPlatform;
 	            if (!standing) {
 	                this.player.animations.play('jump_' + (this.player.body.velocity.y > 0 ? 'down' : 'up'));
 	            }
 
-	            if (this.keys.spacebar.isDown && standing) {
+	            if (this.keys.spacebar.isDown && standing && this.player.alive) {
 	                this.player.body.velocity.y = -300;
 	            }
 
-	            if (this.player.body.blocked.down) {
-	                this.dead();
+	            // if (this.player.body.blocked.down) {
+	            //     this.dead();
+	            // }
+
+	            this.platforms.children.forEach(function (item) {
+	                if (!item.inWorld) {
+	                    item.destroy();
+	                }
+	            });
+
+	            if (this.world.width - this.player.x < this.originWidth) {
+	                this.world.resize(this.world.width + this.originWidth, this.world.height);
 	            }
 	        }
 	    }, {
 	        key: 'dead',
 	        value: function dead() {
-	            this.isAlive = false;
+	            this.player.alive = false;
 	        }
 	    }, {
 	        key: 'setFriction',
 	        value: function setFriction(player, platform) {
-	            if (platform.key === 'platform_ice') {}
+	            if (platform.key === 'platform_ice') {
+	                this.player.body.velocity.x *= 1.8;
+	            }
 	        }
 	    }, {
 	        key: 'eatCoin',
