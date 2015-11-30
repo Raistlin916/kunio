@@ -5,11 +5,22 @@ class GroupFactory {
 
     constructor (group) {
         this.group = group;
+        this.record = group.length;
     }
 
-    update (world, screenWidth) {
-        let right = this.group.x + this.group.width;
-        if (world.width - right > screenWidth) {
+    update (camera) {
+        let cacheItemCount = 0;
+        this.group.children.forEach((item) => {
+            if (item.x > camera.x + camera.width) {
+                cacheItemCount ++;
+            }
+
+            if (item.x + item.width < camera.x) {
+                item.destroy();
+            }
+        });
+
+        if ( cacheItemCount < 2 ) {
             this.createOne();
         }
     }
@@ -19,7 +30,12 @@ class GroupFactory {
     }
 
     bindCreateMethod (cb) {
-        this.createOne = cb;
+        this.createOne = () => {
+            let oldLength = this.group.length;
+            cb(this.record);
+            this.record += this.group.length - oldLength;
+        }
+        
     }
 }
 
@@ -31,7 +47,7 @@ export default class Game {
         this.physics.arcade.skipQuadTree = false;
         this.game.renderer.renderSession.roundPixels = true;
         this.originWidth = this.world.width;
-        this.world.resize(this.originWidth*2, 600);
+        this.world.resize(this.originWidth*3, 600);
         this.score = 0;
     }
     
@@ -58,14 +74,17 @@ export default class Game {
         this.player.body.collideWorldBounds = true;
         this.player.position.set(0, this.world.height-200);
         
-        this.platforms = this.add.physicsGroup();
-        for (let i = 0; i < 10; i++) {
-            let x = i * 250;
+        
+        let platforms = this.add.physicsGroup();
+        this.platformsFac = new GroupFactory(platforms);
+
+        this.platformsFac.bindCreateMethod((recordLength) => {
+            let x = recordLength * 200;
             let y = this.world.height - 50 - this.rnd.between(0, 50);
-            this.platforms.create(x, y, ~~this.rnd.between(0, 2) == 1 ? 'platform' : 'platform_ice');
-        }
-        this.platforms.setAll('body.allowGravity', false);
-        this.platforms.setAll('body.immovable', true);
+            let p = platforms.create(x, y, ~~this.rnd.between(0, 2) == 1 ? 'platform' : 'platform_ice');
+            p.body.allowGravity = false;
+            p.body.immovable = true;
+        });
         
         this.coinsGroup = this.add.physicsGroup();
         for (let i = 0; i < 10; i++) {
@@ -94,15 +113,17 @@ export default class Game {
         this.bgtile.tilePosition.x = -(this.camera.x * 0.03);
         
         if (this.player.alive) {
-            this.player.body.velocity.x = 200;
+            this.player.body.velocity.x = 500;
             this.player.animations.play('walk');
         } else {
             this.player.body.velocity.x = 0;
             this.player.animations.play('standing'); 
         }
+
+
         
         let touchPlatform = false;
-        touchPlatform = this.physics.arcade.collide(this.player, this.platforms, this.setFriction, null, this);
+        //touchPlatform = this.physics.arcade.collide(this.player, this.platformsFac.getGroup(), this.setFriction, null, this);
         this.physics.arcade.overlap(this.player, this.coinsGroup, this.eatCoin, null, this);
         
         let standing = this.player.body.blocked.down || touchPlatform;
@@ -118,14 +139,10 @@ export default class Game {
         //     this.dead();
         // }
 
-        this.platforms.children.forEach((item) => {
-            if (!item.inWorld) {
-                item.destroy();
-            }
-        });
+        this.platformsFac.update(this.camera);
 
-        if (this.world.width - this.player.x < this.originWidth) {
-            this.world.resize(this.world.width + this.originWidth, this.world.height);
+        if (this.world.width - this.player.x < this.camera.width) {
+            this.world.resize(this.world.width + this.camera.width, this.world.height);
         }
     }
     
@@ -135,7 +152,7 @@ export default class Game {
     
     setFriction (player, platform) {
         if (platform.key === 'platform_ice') {
-            this.player.body.velocity.x *= 1.8;
+            this.player.body.velocity.x *= 1.5;
         }
     }
     

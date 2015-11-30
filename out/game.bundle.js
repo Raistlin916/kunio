@@ -333,13 +333,24 @@
 	        _classCallCheck(this, GroupFactory);
 
 	        this.group = group;
+	        this.record = group.length;
 	    }
 
 	    _createClass(GroupFactory, [{
 	        key: 'update',
-	        value: function update(world, screenWidth) {
-	            var right = this.group.x + this.group.width;
-	            if (world.width - right > screenWidth) {
+	        value: function update(camera) {
+	            var cacheItemCount = 0;
+	            this.group.children.forEach(function (item) {
+	                if (item.x > camera.x + camera.width) {
+	                    cacheItemCount++;
+	                }
+
+	                if (item.x + item.width < camera.x) {
+	                    item.destroy();
+	                }
+	            });
+
+	            if (cacheItemCount < 2) {
 	                this.createOne();
 	            }
 	        }
@@ -351,7 +362,13 @@
 	    }, {
 	        key: 'bindCreateMethod',
 	        value: function bindCreateMethod(cb) {
-	            this.createOne = cb;
+	            var _this = this;
+
+	            this.createOne = function () {
+	                var oldLength = _this.group.length;
+	                cb(_this.record);
+	                _this.record += _this.group.length - oldLength;
+	            };
 	        }
 	    }]);
 
@@ -371,12 +388,14 @@
 	            this.physics.arcade.skipQuadTree = false;
 	            this.game.renderer.renderSession.roundPixels = true;
 	            this.originWidth = this.world.width;
-	            this.world.resize(this.originWidth * 2, 600);
+	            this.world.resize(this.originWidth * 3, 600);
 	            this.score = 0;
 	        }
 	    }, {
 	        key: 'create',
 	        value: function create() {
+	            var _this2 = this;
+
 	            this.bgtile = this.add.tileSprite(0, 0, this.world.width, this.world.height, 'bg');
 	            this.bgtile.tilePosition.set(0, this.world.height);
 	            this.bgtile.position.set(0, this.world.height);
@@ -398,14 +417,16 @@
 	            this.player.body.collideWorldBounds = true;
 	            this.player.position.set(0, this.world.height - 200);
 
-	            this.platforms = this.add.physicsGroup();
-	            for (var i = 0; i < 10; i++) {
-	                var x = i * 250;
-	                var y = this.world.height - 50 - this.rnd.between(0, 50);
-	                this.platforms.create(x, y, ~ ~this.rnd.between(0, 2) == 1 ? 'platform' : 'platform_ice');
-	            }
-	            this.platforms.setAll('body.allowGravity', false);
-	            this.platforms.setAll('body.immovable', true);
+	            var platforms = this.add.physicsGroup();
+	            this.platformsFac = new GroupFactory(platforms);
+
+	            this.platformsFac.bindCreateMethod(function (recordLength) {
+	                var x = recordLength * 200;
+	                var y = _this2.world.height - 50 - _this2.rnd.between(0, 50);
+	                var p = platforms.create(x, y, ~ ~_this2.rnd.between(0, 2) == 1 ? 'platform' : 'platform_ice');
+	                p.body.allowGravity = false;
+	                p.body.immovable = true;
+	            });
 
 	            this.coinsGroup = this.add.physicsGroup();
 	            for (var i = 0; i < 10; i++) {
@@ -433,7 +454,7 @@
 	            this.bgtile.tilePosition.x = -(this.camera.x * 0.03);
 
 	            if (this.player.alive) {
-	                this.player.body.velocity.x = 200;
+	                this.player.body.velocity.x = 500;
 	                this.player.animations.play('walk');
 	            } else {
 	                this.player.body.velocity.x = 0;
@@ -441,7 +462,7 @@
 	            }
 
 	            var touchPlatform = false;
-	            touchPlatform = this.physics.arcade.collide(this.player, this.platforms, this.setFriction, null, this);
+	            //touchPlatform = this.physics.arcade.collide(this.player, this.platformsFac.getGroup(), this.setFriction, null, this);
 	            this.physics.arcade.overlap(this.player, this.coinsGroup, this.eatCoin, null, this);
 
 	            var standing = this.player.body.blocked.down || touchPlatform;
@@ -457,14 +478,10 @@
 	            //     this.dead();
 	            // }
 
-	            this.platforms.children.forEach(function (item) {
-	                if (!item.inWorld) {
-	                    item.destroy();
-	                }
-	            });
+	            this.platformsFac.update(this.camera);
 
-	            if (this.world.width - this.player.x < this.originWidth) {
-	                this.world.resize(this.world.width + this.originWidth, this.world.height);
+	            if (this.world.width - this.player.x < this.camera.width) {
+	                this.world.resize(this.world.width + this.camera.width, this.world.height);
 	            }
 	        }
 	    }, {
@@ -476,7 +493,7 @@
 	        key: 'setFriction',
 	        value: function setFriction(player, platform) {
 	            if (platform.key === 'platform_ice') {
-	                this.player.body.velocity.x *= 1.8;
+	                this.player.body.velocity.x *= 1.5;
 	            }
 	        }
 	    }, {
