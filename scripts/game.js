@@ -77,25 +77,30 @@ export default class Game {
         
         let platforms = this.add.physicsGroup();
         this.platformsFac = new GroupFactory(platforms);
-
         this.platformsFac.bindCreateMethod((recordLength) => {
             let x = recordLength * 200;
-            let y = this.world.height - 50 - this.rnd.between(0, 50);
-            let p = platforms.create(x, y, ~~this.rnd.between(0, 2) == 1 ? 'platform' : 'platform_ice');
+            let y = this.world.height - 50 - this.rnd.integerInRange(0, 50);
+            let p = platforms.create(x, y, this.rnd.integerInRange(0, 2) == 1 ? 'platform' : 'platform_ice');
             p.body.allowGravity = false;
             p.body.immovable = true;
         });
-        
-        this.coinsGroup = this.add.physicsGroup();
-        for (let i = 0; i < 10; i++) {
-            let x = i * 30 + 100;
-            let y = this.world.height - 150;
-            this.coinsGroup.create(x, y, 'coin');
-        }
-        this.coinsGroup.callAll('animations.add', 'animations', 'flash');
-        this.coinsGroup.callAll('play', null, 'flash', 10, true);
-        this.coinsGroup.setAll('body.allowGravity', false);
-        this.coinsGroup.setAll('body.immovable', true);
+
+        let coinsGroup = this.add.physicsGroup();
+        this.coinsFac = new GroupFactory(coinsGroup);
+        this.coinsFac.bindCreateMethod((recordLength) => {
+            let group = this.add.physicsGroup();
+            group.position.set(recordLength * 500, 0);
+            for (let i = 0; i < 10; i++) {
+                let x = i * 30 + 100;
+                let y = this.world.height - 150;
+                group.create(x, y, 'coin');
+            }
+            group.callAll('animations.add', 'animations', 'flash');
+            group.callAll('play', null, 'flash', 10, true);
+            group.setAll('body.allowGravity', false);
+            group.setAll('body.immovable', true);
+            this.coinsFac.group.add(group);
+        });
         
         
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -113,18 +118,20 @@ export default class Game {
         this.bgtile.tilePosition.x = -(this.camera.x * 0.03);
         
         if (this.player.alive) {
-            this.player.body.velocity.x = 500;
+            this.player.body.velocity.x = 200;
             this.player.animations.play('walk');
         } else {
             this.player.body.velocity.x = 0;
             this.player.animations.play('standing'); 
         }
 
-
-        
         let touchPlatform = false;
-        //touchPlatform = this.physics.arcade.collide(this.player, this.platformsFac.getGroup(), this.setFriction, null, this);
-        this.physics.arcade.overlap(this.player, this.coinsGroup, this.eatCoin, null, this);
+        touchPlatform = this.physics.arcade.collide(this.player, this.platformsFac.getGroup(), 
+            this.setFriction, null, this);
+
+        this.coinsFac.getGroup().forEach((coinsGroup) => {
+            this.physics.arcade.overlap(this.player, coinsGroup, this.eatCoin, null, this);
+        });
         
         let standing = this.player.body.blocked.down || touchPlatform;
         if (!standing) {
@@ -135,11 +142,12 @@ export default class Game {
             this.player.body.velocity.y = -300;
         }
         
-        // if (this.player.body.blocked.down) {
-        //     this.dead();
-        // }
+        if (this.player.body.blocked.down) {
+            this.dead();
+        }
 
         this.platformsFac.update(this.camera);
+        this.coinsFac.update(this.camera);
 
         if (this.world.width - this.player.x < this.camera.width) {
             this.world.resize(this.world.width + this.camera.width, this.world.height);
