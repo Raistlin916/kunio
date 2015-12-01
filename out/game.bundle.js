@@ -431,10 +431,10 @@
 	            this.coinsFac = new GroupFactory(coinsGroup);
 	            this.coinsFac.bindCreateMethod(function (recordLength) {
 	                var group = _this2.add.physicsGroup();
-	                group.position.set(recordLength * 500, 0);
+	                group.position.set(recordLength * 500 + 100, _this2.world.height - 150);
 	                for (var i = 0; i < 10; i++) {
-	                    var x = i * 30 + 100;
-	                    var y = _this2.world.height - 150;
+	                    var x = i * 30;
+	                    var y = 0;
 	                    group.create(x, y, 'coin');
 	                }
 	                group.callAll('animations.add', 'animations', 'flash');

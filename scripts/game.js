@@ -89,10 +89,10 @@ export default class Game {
         this.coinsFac = new GroupFactory(coinsGroup);
         this.coinsFac.bindCreateMethod((recordLength) => {
             let group = this.add.physicsGroup();
-            group.position.set(recordLength * 500, 0);
+            group.position.set(recordLength * 500 + 100, this.world.height - 150);
             for (let i = 0; i < 10; i++) {
-                let x = i * 30 + 100;
-                let y = this.world.height - 150;
+                let x = i * 30;
+                let y = 0;
                 group.create(x, y, 'coin');
             }
             group.callAll('animations.add', 'animations', 'flash');
