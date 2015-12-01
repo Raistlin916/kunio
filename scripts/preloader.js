@@ -3,6 +3,7 @@ export default class Preloader {
         this.load.atlasJSONHash('kunio', 'assets/kunio.png', 'assets/kunio.json');
         this.load.atlasJSONHash('mingren', 'assets/mingren.png', 'assets/mingren.json');
         this.load.spritesheet('coin', 'assets/coin.png', 24, 24);
+        this.load.spritesheet('platform_ice_sheet', 'assets/platform_ice.png', 32, 32);
         this.load.image('tile', 'assets/tile.png');
         this.load.image('bg', 'assets/bg.jpg');
         this.load.image('platform', 'assets/platform.png');
@@ -10,6 +11,6 @@ export default class Preloader {
         this.load.bitmapFont('carrier_command', 'assets/carrier_command.png', 'assets/carrier_command.xml');
     }
     create () {
-        this.state.start('Game');
+        this.state.start('test');
     }
 }
