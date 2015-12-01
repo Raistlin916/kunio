@@ -125,15 +125,14 @@ export default class Game {
             this.player.animations.play('standing'); 
         }
 
-        let touchPlatform = false;
-        touchPlatform = this.physics.arcade.collide(this.player, this.platformsFac.getGroup(), 
+        this.physics.arcade.collide(this.player, this.platformsFac.getGroup(), 
             this.setFriction, null, this);
 
         this.coinsFac.getGroup().forEach((coinsGroup) => {
             this.physics.arcade.overlap(this.player, coinsGroup, this.eatCoin, null, this);
         });
         
-        let standing = this.player.body.blocked.down || touchPlatform;
+        let standing = this.player.body.blocked.down || this.player.body.touching.down;
         if (!standing) {
             this.player.animations.play('jump_' + (this.player.body.velocity.y > 0 ? 'down' : 'up') );
         }

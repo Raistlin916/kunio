@@ -468,14 +468,13 @@
 	                this.player.animations.play('standing');
 	            }
 
-	            var touchPlatform = false;
-	            touchPlatform = this.physics.arcade.collide(this.player, this.platformsFac.getGroup(), this.setFriction, null, this);
+	            this.physics.arcade.collide(this.player, this.platformsFac.getGroup(), this.setFriction, null, this);
 
 	            this.coinsFac.getGroup().forEach(function (coinsGroup) {
 	                _this3.physics.arcade.overlap(_this3.player, coinsGroup, _this3.eatCoin, null, _this3);
 	            });
 
-	            var standing = this.player.body.blocked.down || touchPlatform;
+	            var standing = this.player.body.blocked.down || this.player.body.touching.down;
 	            if (!standing) {
 	                this.player.animations.play('jump_' + (this.player.body.velocity.y > 0 ? 'down' : 'up'));
 	            }
