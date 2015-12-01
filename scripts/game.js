@@ -17,7 +17,6 @@ class GroupFactory {
             }
             
             if (groundBounds.right < camera.bounds.left) {
-                console.log('destroy');
                 item.destroy();
             }
         });
@@ -127,14 +126,14 @@ export default class Game {
             this.player.animations.play('standing'); 
         }
 
-        this.physics.arcade.collide(this.player, this.platformsFac.getGroup(), 
-            this.setFriction, null, this);
+        let touchPlatform = this.physics.arcade.collide(this.player, this.platformsFac.getGroup(), 
+            this.onCollidePlatform, null, this);
 
         this.coinsFac.getGroup().forEach((coinsGroup) => {
             this.physics.arcade.overlap(this.player, coinsGroup, this.eatCoin, null, this);
         });
         
-        let standing = this.player.body.blocked.down || this.player.body.touching.down;
+        let standing = this.player.body.blocked.down || (this.player.body.touching.down && touchPlatform);
         if (!standing) {
             this.player.animations.play('jump_' + (this.player.body.velocity.y > 0 ? 'down' : 'up') );
         }
@@ -144,7 +143,7 @@ export default class Game {
         }
         
         if (this.player.body.blocked.down) {
-            //this.dead();
+            this.dead();
         }
 
         this.platformsFac.update(this.camera);
@@ -159,7 +158,7 @@ export default class Game {
         this.player.alive = false;
     }
     
-    setFriction (player, platform) {
+    onCollidePlatform (player, platform) {
         if (platform.key === 'platform_ice') {
             this.player.body.velocity.x *= 1.5;
         }
