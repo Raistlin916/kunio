@@ -11,11 +11,13 @@ class GroupFactory {
     update (camera) {
         let cacheItemCount = 0;
         this.group.children.forEach((item) => {
-            if (item.x > camera.x + camera.width) {
+            let groundBounds = item.getBounds();
+            if (groundBounds.left > camera.bounds.right) {
                 cacheItemCount ++;
             }
-
-            if (item.x + item.width < camera.x) {
+            
+            if (groundBounds.right < camera.bounds.left) {
+                console.log('destroy');
                 item.destroy();
             }
         });
@@ -142,7 +144,7 @@ export default class Game {
         }
         
         if (this.player.body.blocked.down) {
-            this.dead();
+            //this.dead();
         }
 
         this.platformsFac.update(this.camera);
