@@ -448,7 +448,7 @@
 	            this.coinsFac = new GroupFactory(coinsGroup);
 	            this.coinsFac.bindCreateMethod(function (recordLength, lastOne) {
 	                var group = _this2.add.physicsGroup();
-	                var x = lastOne ? lastOne.x + lastOne.width + 200 : 0;
+	                var x = lastOne ? lastOne.x + lastOne.width + 500 : 500;
 	                group.position.set(x, _this2.world.height - 150);
 	                for (var i = 0; i < 10; i++) {
 	                    var _x = i * 30;
@@ -587,7 +587,7 @@
 	            return {
 	                array: platformLibrary[dataIndex],
 	                type: this.rnd.integerInRange(0, 1) == 1 ? 'platform_sheet' : 'platform_ice_sheet',
-	                y: this.rnd.integerInRange(-50, 50)
+	                y: this.rnd.integerInRange(-30, 30)
 	            };
 	        }
 	    }]);
