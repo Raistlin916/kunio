@@ -66,7 +66,7 @@
 
 	/* global Phaser */
 
-	var screenDims = _screen_utils2.default.calculateScreenMetrics(800, 500, _screen_utils.Orientation.LANDSCAPE);
+	var screenDims = _screen_utils2.default.calculateScreenMetrics(document.documentElement.clientWidth, document.documentElement.clientHeight, _screen_utils.Orientation.PORTRAIT);
 
 	var game = new Phaser.Game(screenDims.gameWidth, screenDims.gameHeight, Phaser.AUTO, 'kunio');
 
