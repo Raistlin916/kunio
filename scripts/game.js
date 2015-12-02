@@ -6,31 +6,35 @@ class GroupFactory {
     constructor (group) {
         this.group = group;
         this.record = group.length;
+        this.lastOne = null;
     }
 
     update (camera) {
         let cacheItemCount = 0;
         this.group.children.forEach((item) => {
             let groundBounds = item.getBounds();
-            if (groundBounds.left > camera.bounds.right) {
+
+            if (groundBounds.left > camera.width) {
                 cacheItemCount ++;
             }
             
-            if (groundBounds.right < camera.bounds.left) {
+            if (groundBounds.right < 0) {
                 item.destroy();
             }
         });
 
         if ( cacheItemCount < 2 ) {
-            this.createOne();
+            this.lastOne = this.createOne();
         }
     }
 
     bindCreateMethod (cb) {
         this.createOne = () => {
             let oldLength = this.group.length;
-            cb(this.record);
+            let result = cb(this.record, this.lastOne);
             this.record += this.group.length - oldLength;
+
+            return result;
         }
         
     }
@@ -43,7 +47,7 @@ export default class Game {
         this.physics.arcade.gravity.y = 750;
         this.physics.arcade.skipQuadTree = false;
         this.game.renderer.renderSession.roundPixels = true;
-        this.originWidth = this.world.width;
+        this.originWidth = this.camera.width;
         this.world.resize(this.originWidth*3, 600);
         this.score = 0;
     }
@@ -74,7 +78,7 @@ export default class Game {
         
         let platforms = this.add.physicsGroup();
         this.platformsFac = new GroupFactory(platforms);
-        this.platformsFac.bindCreateMethod((recordLength) => {
+        this.platformsFac.bindCreateMethod((recordLength, lastOne) => {
             let group = this.add.physicsGroup();
             [0, 1, 1, 1, 1, 1, 3].forEach((index, i)=> {
                 let sprite = this.add.sprite(i * 32, 0, 'platform_ice_sheet', index);
@@ -82,16 +86,19 @@ export default class Game {
             });
             group.setAll('body.allowGravity', false);
             group.setAll('body.immovable', true);
-            group.position.set(recordLength*300, this.world.height - 100);
-
+            
+            let x = lastOne ? (lastOne.x + lastOne.width + 100) : 0;
+            group.position.set(x, this.world.height - 100);
             this.platformsFac.group.add(group);
+            return group;
         });
 
         let coinsGroup = this.add.physicsGroup();
         this.coinsFac = new GroupFactory(coinsGroup);
-        this.coinsFac.bindCreateMethod((recordLength) => {
+        this.coinsFac.bindCreateMethod((recordLength, lastOne) => {
             let group = this.add.physicsGroup();
-            group.position.set(recordLength * 500 + 100, this.world.height - 150);
+            let x = lastOne ? (lastOne.x + lastOne.width + 200) : 0;
+            group.position.set(x, this.world.height - 150);
             for (let i = 0; i < 10; i++) {
                 let x = i * 30;
                 let y = 0;
@@ -102,6 +109,8 @@ export default class Game {
             group.setAll('body.allowGravity', false);
             group.setAll('body.immovable', true);
             this.coinsFac.group.add(group);
+
+            return group;
         });
         
         
@@ -156,8 +165,8 @@ export default class Game {
         this.platformsFac.update(this.camera);
         this.coinsFac.update(this.camera);
 
-        if (this.world.width - this.player.x < this.camera.width) {
-            this.world.resize(this.world.width + this.camera.width, this.world.height);
+        if (this.world.width - this.player.x < this.originWidth) {
+            this.world.resize(this.world.width + this.originWidth, this.world.height);
         }
     }
     
@@ -166,7 +175,7 @@ export default class Game {
     }
     
     onCollidePlatform (player, platform) {
-        if (platform.key === 'platform_ice') {
+        if (platform.key === 'platform_ice_sheet') {
             this.player.body.velocity.x *= 1.5;
         }
     }
