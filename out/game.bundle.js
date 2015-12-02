@@ -294,6 +294,8 @@
 	            this.load.atlasJSONHash('kunio', 'assets/kunio.png', 'assets/kunio.json');
 	            this.load.atlasJSONHash('mingren', 'assets/mingren.png', 'assets/mingren.json');
 	            this.load.spritesheet('coin', 'assets/coin.png', 24, 24);
+	            this.load.spritesheet('platform_ice_sheet', 'assets/platform_ice.png', 32, 32);
+	            this.load.spritesheet('platform_sheet', 'assets/platform.png', 35, 32);
 	            this.load.image('tile', 'assets/tile.png');
 	            this.load.image('bg', 'assets/bg.jpg');
 	            this.load.image('platform', 'assets/platform.png');
@@ -341,11 +343,12 @@
 	        value: function update(camera) {
 	            var cacheItemCount = 0;
 	            this.group.children.forEach(function (item) {
-	                if (item.x > camera.x + camera.width) {
+	                var groundBounds = item.getBounds();
+	                if (groundBounds.left > camera.bounds.right) {
 	                    cacheItemCount++;
 	                }
 
-	                if (item.x + item.width < camera.x) {
+	                if (groundBounds.right < camera.bounds.left) {
 	                    item.destroy();
 	                }
 	            });
@@ -353,11 +356,6 @@
 	            if (cacheItemCount < 2) {
 	                this.createOne();
 	            }
-	        }
-	    }, {
-	        key: 'getGroup',
-	        value: function getGroup() {
-	            return this.group;
 	        }
 	    }, {
 	        key: 'bindCreateMethod',
@@ -420,11 +418,16 @@
 	            var platforms = this.add.physicsGroup();
 	            this.platformsFac = new GroupFactory(platforms);
 	            this.platformsFac.bindCreateMethod(function (recordLength) {
-	                var x = recordLength * 200;
-	                var y = _this2.world.height - 50 - _this2.rnd.integerInRange(0, 50);
-	                var p = platforms.create(x, y, _this2.rnd.integerInRange(0, 2) == 1 ? 'platform' : 'platform_ice');
-	                p.body.allowGravity = false;
-	                p.body.immovable = true;
+	                var group = _this2.add.physicsGroup();
+	                [0, 1, 1, 1, 1, 1, 3].forEach(function (index, i) {
+	                    var sprite = _this2.add.sprite(i * 32, 0, 'platform_ice_sheet', index);
+	                    group.add(sprite);
+	                });
+	                group.setAll('body.allowGravity', false);
+	                group.setAll('body.immovable', true);
+	                group.position.set(recordLength * 300, _this2.world.height - 100);
+
+	                _this2.platformsFac.group.add(group);
 	            });
 
 	            var coinsGroup = this.add.physicsGroup();
@@ -468,13 +471,20 @@
 	                this.player.animations.play('standing');
 	            }
 
-	            this.physics.arcade.collide(this.player, this.platformsFac.getGroup(), this.setFriction, null, this);
+	            var touchPlatform = false;
 
-	            this.coinsFac.getGroup().forEach(function (coinsGroup) {
+	            this.platformsFac.group.forEach(function (platform) {
+	                var result = _this3.physics.arcade.collide(_this3.player, platform, _this3.onCollidePlatform, null, _this3);
+	                if (result) {
+	                    touchPlatform = result;
+	                }
+	            });
+
+	            this.coinsFac.group.forEach(function (coinsGroup) {
 	                _this3.physics.arcade.overlap(_this3.player, coinsGroup, _this3.eatCoin, null, _this3);
 	            });
 
-	            var standing = this.player.body.blocked.down || this.player.body.touching.down;
+	            var standing = this.player.body.blocked.down || this.player.body.touching.down && touchPlatform;
 	            if (!standing) {
 	                this.player.animations.play('jump_' + (this.player.body.velocity.y > 0 ? 'down' : 'up'));
 	            }
@@ -500,8 +510,8 @@
 	            this.player.alive = false;
 	        }
 	    }, {
-	        key: 'setFriction',
-	        value: function setFriction(player, platform) {
+	        key: 'onCollidePlatform',
+	        value: function onCollidePlatform(player, platform) {
 	            if (platform.key === 'platform_ice') {
 	                this.player.body.velocity.x *= 1.5;
 	            }

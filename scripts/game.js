@@ -26,10 +26,6 @@ class GroupFactory {
         }
     }
 
-    getGroup () {
-        return this.group;
-    }
-
     bindCreateMethod (cb) {
         this.createOne = () => {
             let oldLength = this.group.length;
@@ -79,11 +75,16 @@ export default class Game {
         let platforms = this.add.physicsGroup();
         this.platformsFac = new GroupFactory(platforms);
         this.platformsFac.bindCreateMethod((recordLength) => {
-            let x = recordLength * 200;
-            let y = this.world.height - 50 - this.rnd.integerInRange(0, 50);
-            let p = platforms.create(x, y, this.rnd.integerInRange(0, 2) == 1 ? 'platform' : 'platform_ice');
-            p.body.allowGravity = false;
-            p.body.immovable = true;
+            let group = this.add.physicsGroup();
+            [0, 1, 1, 1, 1, 1, 3].forEach((index, i)=> {
+                let sprite = this.add.sprite(i * 32, 0, 'platform_ice_sheet', index);
+                group.add(sprite);
+            });
+            group.setAll('body.allowGravity', false);
+            group.setAll('body.immovable', true);
+            group.position.set(recordLength*300, this.world.height - 100);
+
+            this.platformsFac.group.add(group);
         });
 
         let coinsGroup = this.add.physicsGroup();
@@ -126,10 +127,16 @@ export default class Game {
             this.player.animations.play('standing'); 
         }
 
-        let touchPlatform = this.physics.arcade.collide(this.player, this.platformsFac.getGroup(), 
-            this.onCollidePlatform, null, this);
+        let touchPlatform = false;
 
-        this.coinsFac.getGroup().forEach((coinsGroup) => {
+        this.platformsFac.group.forEach((platform) => {
+            let result = this.physics.arcade.collide(this.player, platform, this.onCollidePlatform, null, this);
+            if (result) {
+                touchPlatform = result;
+            }
+        });
+
+        this.coinsFac.group.forEach((coinsGroup) => {
             this.physics.arcade.overlap(this.player, coinsGroup, this.eatCoin, null, this);
         });
         
