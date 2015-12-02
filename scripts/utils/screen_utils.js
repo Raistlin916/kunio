@@ -22,7 +22,8 @@ export let screenDims = new ScreenMetrics();
 export const Orientation = { PORTRAIT: Symbol('PORTRAIT'), LANDSCAPE: Symbol('LANDSCAPE') };
 
 export default {
-    calculateScreenMetrics: (aDefaultWidth, aDefaultHeight, aOrientation = Orientation.LANDSCAPE
+    calculateScreenMetrics: (aDefaultWidth, aDefaultHeight
+        , aOrientation = Orientation.LANDSCAPE
         , aMaxGameWidth, aMaxGameHeight) => {
         // get dimension of window
         var windowWidth = window.innerWidth;
@@ -59,7 +60,7 @@ export default {
         var gameWidth = 0;
         var gameHeight = 0;
     
-        // if (aOrientation === Orientation.LANDSCAPE) {
+        if (aOrientation === Orientation.LANDSCAPE) {
             // "iPhone" landscape ... and "iPad" portrait
             if (windowAspect > defaultAspect) {
                 gameHeight = aDefaultHeight;
@@ -74,7 +75,7 @@ export default {
                 offsetX = 0;
                 offsetY = (gameHeight - aDefaultHeight) / 2;
             }
-        /* } else {    // "iPhone" portrait
+        } else {    // "iPhone" portrait
             if (windowAspect < defaultAspect) {
                 gameWidth = aDefaultWidth;
                 gameHeight = gameWidth / windowAspect;
@@ -89,7 +90,6 @@ export default {
                 offsetY = 0;
             }
         }
-        */
     
     
         // calculate scale
