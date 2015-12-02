@@ -66,7 +66,9 @@
 
 	/* global Phaser */
 
-	var screenDims = _screen_utils2.default.calculateScreenMetrics(document.documentElement.clientWidth, document.documentElement.clientHeight, _screen_utils.Orientation.PORTRAIT);
+	var w = document.documentElement.clientWidth;
+	var h = document.documentElement.clientHeight;
+	var screenDims = _screen_utils2.default.calculateScreenMetrics(w, h, w > h ? _screen_utils.Orientation.LANDSCAPE : _screen_utils.Orientation.PORTRAIT);
 
 	var game = new Phaser.Game(screenDims.gameWidth, screenDims.gameHeight, Phaser.AUTO, 'kunio');
 
@@ -463,10 +465,11 @@
 	                return group;
 	            });
 
-	            this.cursors = this.input.keyboard.createCursorKeys();
 	            this.keys = this.input.keyboard.addKeys({
 	                spacebar: Phaser.Keyboard.SPACEBAR
 	            });
+
+	            //if (game.input.pointer1.isDown)
 
 	            this.scoreText = this.add.bitmapText(10, 10, 'carrier_command', 'score:' + this.score, 18);
 	            this.scoreText.tint = 0x223344;
@@ -505,7 +508,7 @@
 	                this.player.animations.play('jump_' + (this.player.body.velocity.y > 0 ? 'down' : 'up'));
 	            }
 
-	            if (this.keys.spacebar.isDown && standing && this.player.alive) {
+	            if (this.inputJump() && standing && this.player.alive) {
 	                this.player.body.velocity.y = -300;
 	            }
 
@@ -524,6 +527,11 @@
 	        key: 'dead',
 	        value: function dead() {
 	            this.player.alive = false;
+	        }
+	    }, {
+	        key: 'inputJump',
+	        value: function inputJump() {
+	            return this.input.pointer1.isDown || this.keys.spacebar.isDown || this.input.mousePointer.isDown;
 	        }
 	    }, {
 	        key: 'onCollidePlatform',
