@@ -7,11 +7,76 @@
     <meta name="MobileOptimized" content="320">
     <meta name="format-detection" content="telephone=no">
     <meta http-equiv="cleartype" content="on">
+    <meta name="google" value="notranslate">
     <title>phaser</title>
-    <script src="//cdn.jsdelivr.net/phaser/2.4.4/phaser.min.js"></script>
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/normalize/3.0.3/normalize.min.css" type="text/css" />
+    <script src="./vendor/phaser.min.js"></script>
+    <link rel="stylesheet" href="./vendor/normalize.min.css" type="text/css" />
+    <style>
+        .loading-wrap {
+            position:absolute;
+            top: 3em;
+            width: 100%;
+        }
+        .loading-text {
+            margin-top: 3em;
+            text-align: center;
+            font-weight: bold;
+            font-size: 2em;
+        }
+
+        .shuriken{
+            position:absolute;
+            left: 50%;
+            top: 2em;
+            width: 2.2em;    
+            height: 2.2em;
+            margin-left: -1.1em;
+            background:white;
+            border-radius:50%;
+            box-shadow: inset 0 0 0 .7em black;
+            animation: rotate infinite 1.5s linear;
+        }
+
+        .shuriken:after{
+            content:"";
+            position:absolute;
+            top:1.6em;
+            width:0;        
+            height:0;
+            border:solid 1.15em transparent;
+            border-top:solid 2.2em black;
+            border-radius:50%;
+            -webkit-box-reflect: above 1em;
+        }
+
+        .shuriken:before{
+            content:"";
+            position:absolute;
+            left:1.6em;
+            width:0;        
+            height:0;
+            border:solid 1.15em transparent;
+            border-left:solid 2.2em black;
+            border-radius:50%;
+            -webkit-box-reflect: left 1em;
+        }
+
+        @-webkit-keyframes rotate {
+            from {
+                transform: rotate(0);
+            }
+            
+            to {
+                transform: rotate(360deg);
+            }
+          }
+    </style>
 </head>
 <body>
+    <div class="loading-wrap">
+        <div class="shuriken"></div>
+        <p class="loading-text">Loading</p>
+    </div>
     <script src="./out/game.bundle.js"></script>
 </body>
 </html>

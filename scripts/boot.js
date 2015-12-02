@@ -22,6 +22,7 @@ export default class Boot {
     }
     
     create () {
+        this.game.stage.backgroundColor = "#fff";
         this.state.start('Preloader');
     }
 

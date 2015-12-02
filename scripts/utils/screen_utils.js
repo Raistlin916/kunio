@@ -60,7 +60,7 @@ export default {
         var gameWidth = 0;
         var gameHeight = 0;
     
-        if (aOrientation === Orientation.LANDSCAPE) {
+        //if (aOrientation === Orientation.LANDSCAPE) {
             // "iPhone" landscape ... and "iPad" portrait
             if (windowAspect > defaultAspect) {
                 gameHeight = aDefaultHeight;
@@ -75,21 +75,22 @@ export default {
                 offsetX = 0;
                 offsetY = (gameHeight - aDefaultHeight) / 2;
             }
-        } else {    // "iPhone" portrait
-            if (windowAspect < defaultAspect) {
-                gameWidth = aDefaultWidth;
-                gameHeight = gameWidth / windowAspect;
-                gameHeight = Math.min(gameHeight, aMaxGameHeight);
-                offsetX = 0;
-                offsetY = (gameHeight - aDefaultHeight) / 2;
-            } else {    // "iPad" portrait
-                gameHeight = aDefaultHeight;
-                gameWidth = gameHeight = windowAspect;
-                gameWidth = Math.min(gameWidth, aMaxGameWidth);
-                offsetX = (gameWidth - aDefaultWidth) / 2;
-                offsetY = 0;
-            }
-        }
+        // } else {    // "iPhone" portrait
+
+        //     if (windowAspect < defaultAspect) {
+        //         gameWidth = aDefaultWidth;
+        //         gameHeight = gameWidth / windowAspect;
+        //         gameHeight = Math.min(gameHeight, aMaxGameHeight);
+        //         offsetX = 0;
+        //         offsetY = (gameHeight - aDefaultHeight) / 2;
+        //     } else {    // "iPad" portrait
+        //         gameHeight = aDefaultHeight;
+        //         gameWidth = gameHeight = windowAspect;
+        //         gameWidth = Math.min(gameWidth, aMaxGameWidth);
+        //         offsetX = (gameWidth - aDefaultWidth) / 2;
+        //         offsetY = 0;
+        //     }
+        // }
     
     
         // calculate scale

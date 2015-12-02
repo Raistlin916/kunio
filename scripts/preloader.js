@@ -11,5 +11,6 @@ export default class Preloader {
     }
     create () {
         this.state.start('Game');
+        document.querySelector('.loading-wrap').remove();
     }
 }

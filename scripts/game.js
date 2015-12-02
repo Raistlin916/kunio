@@ -49,17 +49,16 @@ export default class Game {
         this.physics.arcade.skipQuadTree = false;
         this.game.renderer.renderSession.roundPixels = true;
         this.originWidth = this.camera.width;
-        this.world.resize(this.originWidth*3, 600);
+        this.world.resize(this.originWidth*3, this.camera.height);
         this.score = 0;
     }
     
     create () {
         this.bgtile = this.add.tileSprite(0, 0, this.world.width, this.world.height, 'bg');
-        this.bgtile.tilePosition.set(0, this.world.height);
+        this.bgtile.tilePosition.set(0, this.world.height + 100);
         this.bgtile.position.set(0, this.world.height);
         this.bgtile.anchor.set(0, 1);
         this.bgtile.fixedToCamera = true;
-    
         
         this.player = this.add.sprite(200, 200, 'mingren');
         this.player.anchor.set(1, 1);
@@ -120,7 +119,6 @@ export default class Game {
             spacebar: Phaser.Keyboard.SPACEBAR
         });
 
-        //if (game.input.pointer1.isDown)
         
         this.scoreText = this.add.bitmapText(10, 10, 'carrier_command','score:' + this.score, 18);
         this.scoreText.tint = 0x223344;
