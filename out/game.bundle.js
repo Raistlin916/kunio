@@ -211,30 +211,32 @@
 	        var gameWidth = 0;
 	        var gameHeight = 0;
 
-	        // if (aOrientation === Orientation.LANDSCAPE) {
-	        // "iPhone" landscape ... and "iPad" portrait
-	        if (windowAspect > defaultAspect) {
-	            gameHeight = aDefaultHeight;
-	            gameWidth = Math.ceil(gameHeight * windowAspect / 2.0) * 2;
-	            gameWidth = Math.min(gameWidth, aMaxGameWidth);
-	            offsetX = (gameWidth - aDefaultWidth) / 2;
-	            offsetY = 0;
+	        if (aOrientation === Orientation.LANDSCAPE) {
+	            // "iPhone" landscape ... and "iPad" portrait
+	            if (windowAspect > defaultAspect) {
+	                gameHeight = aDefaultHeight;
+	                gameWidth = Math.ceil(gameHeight * windowAspect / 2.0) * 2;
+	                gameWidth = Math.min(gameWidth, aMaxGameWidth);
+	                offsetX = (gameWidth - aDefaultWidth) / 2;
+	                offsetY = 0;
+	            } else {
+	                // "iPad" landscpae ... and "iPhone" portrait
+	                gameWidth = aDefaultWidth;
+	                gameHeight = Math.ceil(gameWidth / windowAspect / 2.0) * 2;
+	                gameHeight = Math.min(gameHeight, aMaxGameHeight);
+	                offsetX = 0;
+	                offsetY = (gameHeight - aDefaultHeight) / 2;
+	            }
 	        } else {
-	            // "iPad" landscpae ... and "iPhone" portrait
-	            gameWidth = aDefaultWidth;
-	            gameHeight = Math.ceil(gameWidth / windowAspect / 2.0) * 2;
-	            gameHeight = Math.min(gameHeight, aMaxGameHeight);
-	            offsetX = 0;
-	            offsetY = (gameHeight - aDefaultHeight) / 2;
-	        }
-	        /* } else {    // "iPhone" portrait
+	            // "iPhone" portrait
 	            if (windowAspect < defaultAspect) {
 	                gameWidth = aDefaultWidth;
 	                gameHeight = gameWidth / windowAspect;
 	                gameHeight = Math.min(gameHeight, aMaxGameHeight);
 	                offsetX = 0;
 	                offsetY = (gameHeight - aDefaultHeight) / 2;
-	            } else {    // "iPad" portrait
+	            } else {
+	                // "iPad" portrait
 	                gameHeight = aDefaultHeight;
 	                gameWidth = gameHeight = windowAspect;
 	                gameWidth = Math.min(gameWidth, aMaxGameWidth);
@@ -242,7 +244,6 @@
 	                offsetY = 0;
 	            }
 	        }
-	        */
 
 	        // calculate scale
 	        var scaleX = windowWidth / gameWidth;
@@ -291,12 +292,10 @@
 	    _createClass(Preloader, [{
 	        key: 'preload',
 	        value: function preload() {
-	            this.load.atlasJSONHash('kunio', 'assets/kunio.png', 'assets/kunio.json');
 	            this.load.atlasJSONHash('mingren', 'assets/mingren.png', 'assets/mingren.json');
 	            this.load.spritesheet('coin', 'assets/coin.png', 24, 24);
 	            this.load.spritesheet('platform_ice_sheet', 'assets/platform_ice.png', 32, 32);
 	            this.load.spritesheet('platform_sheet', 'assets/platform.png', 35, 32);
-	            this.load.image('tile', 'assets/tile.png');
 	            this.load.image('bg', 'assets/bg.jpg');
 	            this.load.image('platform', 'assets/platform.png');
 	            this.load.image('platform_ice', 'assets/platform_ice.png');
@@ -583,7 +582,6 @@
 	        key: 'create',
 	        value: function create() {
 	            var dataIndex = this.rnd.integerInRange(0, platformLibrary.length - 1);
-	            console.log(this.game.world.height - 100 - this.rnd.integerInRange(0, 50));
 	            return {
 	                array: platformLibrary[dataIndex],
 	                type: this.rnd.integerInRange(0, 1) == 1 ? 'platform_sheet' : 'platform_ice_sheet',
