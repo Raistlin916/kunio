@@ -1,4 +1,5 @@
 import {Orientation, screenDims} from './utils/screen_utils';
+import PlatformGenerator from './platform_generator';
 
 
 class GroupFactory {
@@ -77,11 +78,13 @@ export default class Game {
         
         
         let platforms = this.add.physicsGroup();
+        let platformGenerator = new PlatformGenerator(this.game);
         this.platformsFac = new GroupFactory(platforms);
         this.platformsFac.bindCreateMethod((recordLength, lastOne) => {
             let group = this.add.physicsGroup();
-            [0, 1, 1, 1, 1, 1, 3].forEach((index, i)=> {
-                let sprite = this.add.sprite(i * 32, 0, 'platform_ice_sheet', index);
+            let platformData = platformGenerator.create();
+            platformData.array.forEach((index, i)=> {
+                let sprite = this.add.sprite(i * 32, platformData.y, platformData.type, index);
                 group.add(sprite);
             });
             group.setAll('body.allowGravity', false);

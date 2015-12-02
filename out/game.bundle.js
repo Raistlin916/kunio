@@ -328,6 +328,12 @@
 
 	var _screen_utils = __webpack_require__(2);
 
+	var _platform_generator = __webpack_require__(5);
+
+	var _platform_generator2 = _interopRequireDefault(_platform_generator);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var GroupFactory = (function () {
@@ -420,11 +426,13 @@
 	            this.player.position.set(0, this.world.height - 200);
 
 	            var platforms = this.add.physicsGroup();
+	            var platformGenerator = new _platform_generator2.default(this.game);
 	            this.platformsFac = new GroupFactory(platforms);
 	            this.platformsFac.bindCreateMethod(function (recordLength, lastOne) {
 	                var group = _this2.add.physicsGroup();
-	                [0, 1, 1, 1, 1, 1, 3].forEach(function (index, i) {
-	                    var sprite = _this2.add.sprite(i * 32, 0, 'platform_ice_sheet', index);
+	                var platformData = platformGenerator.create();
+	                platformData.array.forEach(function (index, i) {
+	                    var sprite = _this2.add.sprite(i * 32, platformData.y, platformData.type, index);
 	                    group.add(sprite);
 	                });
 	                group.setAll('body.allowGravity', false);
@@ -538,6 +546,56 @@
 	})();
 
 	exports.default = Game;
+
+/***/ },
+/* 5 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var platformLibrary = [2, 5, 10, 20];
+
+	platformLibrary.forEach(function (item, index) {
+	    var a = new Array(item);
+	    a.fill(1);
+	    a.unshift(0);
+	    a.push(3);
+	    platformLibrary[index] = a;
+	});
+
+	var PlatformGenerator = (function () {
+	    function PlatformGenerator(game) {
+	        _classCallCheck(this, PlatformGenerator);
+
+	        this.game = game;
+	        this.rnd = game.rnd;
+	    }
+
+	    _createClass(PlatformGenerator, [{
+	        key: 'create',
+	        value: function create() {
+	            var dataIndex = this.rnd.integerInRange(0, platformLibrary.length - 1);
+	            console.log(this.game.world.height - 100 - this.rnd.integerInRange(0, 50));
+	            return {
+	                array: platformLibrary[dataIndex],
+	                type: this.rnd.integerInRange(0, 1) == 1 ? 'platform_sheet' : 'platform_ice_sheet',
+	                y: this.rnd.integerInRange(-50, 50)
+	            };
+	        }
+	    }]);
+
+	    return PlatformGenerator;
+	})();
+
+	exports.default = PlatformGenerator;
 
 /***/ }
 /******/ ]);
