@@ -60,7 +60,7 @@ export default class Game {
         this.bgtile.anchor.set(0, 1);
         this.bgtile.fixedToCamera = true;
         
-        this.player = this.add.sprite(200, 200, 'mingren');
+        this.player = this.add.sprite(50, this.world.height-200, 'mingren');
         this.player.anchor.set(1, 1);
         
         this.player.animations.add('standing', [0,1,2,3], 10, true);
@@ -73,7 +73,6 @@ export default class Game {
         
         this.physics.arcade.enable(this.player);
         this.player.body.collideWorldBounds = true;
-        this.player.position.set(50, this.world.height-200);
         
         
         let platforms = this.add.physicsGroup();
