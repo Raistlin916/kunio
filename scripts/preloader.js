@@ -19,9 +19,12 @@ export default class Preloader {
         }, 1000);
         setTimeout(() => {
             gameWrap.classList.add('fade-in');
-        }, 100);
-        loadingElement.classList.add('fade-out');
-        this.state.start('Game');
+        }, 400);
+        setTimeout(() => {
+            loadingElement.classList.add('fade-out');
+            this.state.start('Game');
+        }, 300);
+        
     }
 
     onFileLoaded (progress, cacheKey, success, totalLoaded, totalFiles) {
