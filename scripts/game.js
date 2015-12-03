@@ -55,7 +55,7 @@ export default class Game {
     
     create () {
         this.bgtile = this.add.tileSprite(0, 0, this.world.width, this.world.height, 'bg');
-        this.bgtile.tilePosition.set(0, this.world.height + 100);
+        this.bgtile.tilePosition.set(0, this.world.height);
         this.bgtile.position.set(0, this.world.height);
         this.bgtile.anchor.set(0, 1);
         this.bgtile.fixedToCamera = true;
@@ -73,7 +73,7 @@ export default class Game {
         
         this.physics.arcade.enable(this.player);
         this.player.body.collideWorldBounds = true;
-        this.player.position.set(0, this.world.height-200);
+        this.player.position.set(50, this.world.height-200);
         
         
         let platforms = this.add.physicsGroup();
@@ -89,9 +89,10 @@ export default class Game {
             group.setAll('body.allowGravity', false);
             group.setAll('body.immovable', true);
             
-            let x = lastOne ? (lastOne.x + lastOne.width + 100) : 0;
+            let x = lastOne ? (lastOne.x + lastOne.width + 120) : 0;
             group.position.set(x, this.world.height - 100);
             this.platformsFac.group.add(group);
+
             return group;
         });
 
@@ -129,8 +130,15 @@ export default class Game {
     update () {
         this.bgtile.tilePosition.x = -(this.camera.x * 0.03);
 
-        let touchPlatform = false;
+        if (this.player.alive) {
+            this.player.body.velocity.x = 300;
+            this.player.animations.play('walk');
+        } else {
+            this.player.body.velocity.x = 0;
+            this.player.animations.play('standing'); 
+        }
 
+        let touchPlatform = false;
         this.platformsFac.group.forEach((platform) => {
             let result = this.physics.arcade.collide(this.player, platform, this.onCollidePlatform, null, this);
             if (result) {
@@ -141,15 +149,6 @@ export default class Game {
         this.coinsFac.group.forEach((coinsGroup) => {
             this.physics.arcade.overlap(this.player, coinsGroup, this.eatCoin, null, this);
         });
-
-        
-        if (this.player.alive) {
-            this.player.body.velocity.x = 200;
-            this.player.animations.play('walk');
-        } else {
-            this.player.body.velocity.x = 0;
-            this.player.animations.play('standing'); 
-        }
         
         let standing = this.player.body.blocked.down || (this.player.body.touching.down && touchPlatform);
         if (!standing) {
