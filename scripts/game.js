@@ -124,11 +124,13 @@ export default class Game {
         this.scoreText = this.add.bitmapText(10, 10, 'carrier_command','score:' + this.score, 18);
         this.scoreText.tint = 0x223344;
         this.scoreText.fixedToCamera = true;
+        this.playFail = false;
+        this.cameraFollow();
     }
     
     
     update () {
-        this.camera.focusOnXY(this.player.x + this.camera.width/2 - 50, this.player.y);
+        this.cameraFollow();
         this.bgtile.tilePosition.x = -(this.camera.x * 0.03);
 
         if (this.player.alive) {
@@ -136,7 +138,16 @@ export default class Game {
             this.player.animations.play('walk');
         } else {
             this.player.body.velocity.x = 0;
-            this.player.animations.play('fail_after'); 
+            if (!this.playFail) {
+                this.player.animations.play('fail');
+                this.player.animations.currentAnim.onComplete.addOnce(() => {
+                    this.player.animations.play('fail_after');
+                    this.input.onDown.add(() => {
+                        this.state.start('Game');
+                    });
+                });
+                this.playFail = true;
+            }
         }
 
         let touchPlatform = false;
@@ -192,6 +203,10 @@ export default class Game {
         coin.kill();
         this.score += 10;
         this.scoreText.setText('score:' + this.score);
+    }
+
+    cameraFollow () {
+        this.camera.focusOnXY(this.player.x + this.camera.width/2 - 50, this.player.y);
     }
     
     
