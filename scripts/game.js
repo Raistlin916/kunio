@@ -128,14 +128,6 @@ export default class Game {
     
     update () {
         this.bgtile.tilePosition.x = -(this.camera.x * 0.03);
-        
-        if (this.player.alive) {
-            this.player.body.velocity.x = 200;
-            this.player.animations.play('walk');
-        } else {
-            this.player.body.velocity.x = 0;
-            this.player.animations.play('standing'); 
-        }
 
         let touchPlatform = false;
 
@@ -149,6 +141,15 @@ export default class Game {
         this.coinsFac.group.forEach((coinsGroup) => {
             this.physics.arcade.overlap(this.player, coinsGroup, this.eatCoin, null, this);
         });
+
+        
+        if (this.player.alive) {
+            this.player.body.velocity.x = 200;
+            this.player.animations.play('walk');
+        } else {
+            this.player.body.velocity.x = 0;
+            this.player.animations.play('standing'); 
+        }
         
         let standing = this.player.body.blocked.down || (this.player.body.touching.down && touchPlatform);
         if (!standing) {
