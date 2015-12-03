@@ -61,7 +61,7 @@ export default class Game {
         this.bgtile.fixedToCamera = true;
         
         this.player = this.add.sprite(50, this.world.height-200, 'mingren');
-        this.player.anchor.set(1, 1);
+        this.player.anchor.set(.5, .5);
         
         this.player.animations.add('standing', [0,1,2,3], 10, true);
         this.player.animations.add('walk', [4,5,6,7,8,9,10], 10, true);
@@ -88,7 +88,7 @@ export default class Game {
             group.setAll('body.allowGravity', false);
             group.setAll('body.immovable', true);
             
-            let x = lastOne ? (lastOne.x + lastOne.width + 120) : 0;
+            let x = lastOne ? (lastOne.x + lastOne.width + 150) : 0;
             group.position.set(x, this.world.height - 100);
             this.platformsFac.group.add(group);
 

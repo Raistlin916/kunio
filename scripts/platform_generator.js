@@ -3,7 +3,8 @@ let platformLibrary = {
     's': 3,
     'm': 5,
     'l': 10,
-    'xl': 15
+    'xl': 15,
+    'xxl': 20
 };
 for (let key in platformLibrary) {
     let a = new Array(platformLibrary[key]);
@@ -28,7 +29,7 @@ export default class PlatformGenerator {
     constructor (game) {
         this.game = game;
         this.rnd = game.rnd;
-        this.queue = 'l,m,m,xs,xs,xs,m'.split(',');
+        this.queue = 'xxl,m,m,xs,xs,xs,m'.split(',');
     }
 
     create () {
