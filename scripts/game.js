@@ -61,15 +61,16 @@ export default class Game {
         this.bgtile.fixedToCamera = true;
         
         this.player = this.add.sprite(50, this.world.height-200, 'mingren');
-        this.player.anchor.set(.5, .5);
+        this.player.anchor.set(1, 1);
         
         this.player.animations.add('standing', [0,1,2,3], 10, true);
         this.player.animations.add('walk', [4,5,6,7,8,9,10], 10, true);
         this.player.animations.add('jump_up', [14,15], 4, false);
         this.player.animations.add('jump_down', [16,17], 4, false);
+        this.player.animations.add('fail', [19, 20, 21, 22], 5, false);
+        this.player.animations.add('fail_after', [23,24], 4, true);
         this.player.smoothed = false;
         
-        this.camera.follow(this.player);
         
         this.physics.arcade.enable(this.player);
         this.player.body.collideWorldBounds = true;
@@ -127,6 +128,7 @@ export default class Game {
     
     
     update () {
+        this.camera.focusOnXY(this.player.x + this.camera.width/2 - 50, this.player.y);
         this.bgtile.tilePosition.x = -(this.camera.x * 0.03);
 
         if (this.player.alive) {
@@ -134,7 +136,7 @@ export default class Game {
             this.player.animations.play('walk');
         } else {
             this.player.body.velocity.x = 0;
-            this.player.animations.play('standing'); 
+            this.player.animations.play('fail_after'); 
         }
 
         let touchPlatform = false;
