@@ -8,16 +8,20 @@ export default class Preloader {
         this.load.image('platform', 'assets/platform.png');
         this.load.image('platform_ice', 'assets/platform_ice.png');
         this.load.bitmapFont('carrier_command', 'assets/carrier_command.png', 'assets/carrier_command.xml');
-
-        this.load.onLoadStart.add(() => {
-            console.log('loadStart');
-        });
         this.load.onFileComplete.add(this.onFileLoaded, this);
         this.loadingProgress = document.querySelector('.loading-progress');
     }
     create () {
+        let loadingElement = document.querySelector('.loading-wrap');
+        let gameWrap = document.getElementById('game-wrap');
+        setTimeout(() => {
+            loadingElement.remove();
+        }, 1000);
+        setTimeout(() => {
+            gameWrap.classList.add('fade-in');
+        }, 100);
+        loadingElement.classList.add('fade-out');
         this.state.start('Game');
-        document.querySelector('.loading-wrap').remove();
     }
 
     onFileLoaded (progress, cacheKey, success, totalLoaded, totalFiles) {

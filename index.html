@@ -16,6 +16,10 @@
             position:absolute;
             top: 3em;
             width: 100%;
+            transition: 1s ease opacity;
+        }
+        .loading-wrap.fade-out {
+            opacity: 0;
         }
         .loading-text {
             margin-top: 3em;
@@ -69,14 +73,23 @@
             to {
                 transform: rotate(360deg);
             }
-          }
+        }
+
+        #game-wrap {
+            transition: 1s ease-out opacity;
+            opacity: 0;
+        }
+        #game-wrap.fade-in {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
     <div class="loading-wrap">
         <div class="shuriken"></div>
-        <p class="loading-text">Loading <span class="loading-progress"></span></p>
+        <p class="loading-text">Loading <span class="loading-progress">0%</span></p>
     </div>
+    <div id="game-wrap"></div>
     <script src="./vendor/phaser.min.js"></script>
     <script src="./out/game.bundle.js"></script>
 </body>

@@ -20,7 +20,7 @@ let screenDims = ScreenUtils.calculateScreenMetrics( w, h,
     w > h ? Orientation.LANDSCAPE : Orientation.PORTRAIT);
 
 
-let game = new Phaser.Game(screenDims.gameWidth, screenDims.gameHeight, Phaser.AUTO, 'kunio');
+let game = new Phaser.Game(screenDims.gameWidth, screenDims.gameHeight, Phaser.AUTO, 'game-wrap');
 game.state.add('Boot', Boot);
 game.state.add('Preloader', Preloader);
 game.state.add('Game', Game);
