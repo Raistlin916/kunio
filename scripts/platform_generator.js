@@ -39,7 +39,7 @@ export default class PlatformGenerator {
             this.queue = Array.from(platformCombos[rndIndex]);
         }
         platformKey = this.queue.shift();
-        let y = this.rnd.integerInRange(-30, 30);
+        let y = 0;
         let type = this.rnd.integerInRange(0, 1) == 1 ? 'platform_sheet' : 'platform_ice_sheet'
         
         return platformLibrary[platformKey].map((index, i) => {

@@ -87,7 +87,7 @@ export default class Game {
         this.platformsFac.bindCreateMethod((recordLength, lastOne) => {
             let group = this.add.physicsGroup();
             let x = lastOne ? (lastOne.x + lastOne.width + 150) : 0;
-            group.position.set(x, this.world.height - 100);
+            group.position.set(x, this.world.height - 100 - this.game.rnd.integerInRange(-30, 30));
             
             let platformData = platformGenerator.create();
             platformData.forEach((item, i)=> {
@@ -97,7 +97,7 @@ export default class Game {
             group.setAll('body.allowGravity', false);
             group.setAll('body.immovable', true);
 
-            if (recordLength % 7 == 1) {
+            if (recordLength % 7 == 6) {
                 this.createCoin(group.x + group.width/2, group.y - group.height);
             }
 
@@ -123,6 +123,9 @@ export default class Game {
     createCoin (x, y) {
         let group = this.add.physicsGroup();
         let platform = this.platformsFac.group.children[this.platformsFac.group.length-1];
+        if (platform == undefined) {
+            return;
+        }
         let platformBounds = platform.getBounds();
         let coinData = this.coinGenerator.create();
         coinData.forEach((item) => {
