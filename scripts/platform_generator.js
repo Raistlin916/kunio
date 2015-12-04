@@ -33,7 +33,6 @@ export default class PlatformGenerator {
     }
 
     create () {
-        let platformIndex;
         let platformKey;
         if (!this.queue.length) {
             let rndIndex = this.rnd.integerInRange(0, platformCombos.length-1);
