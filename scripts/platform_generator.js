@@ -40,10 +40,16 @@ export default class PlatformGenerator {
             this.queue = Array.from(platformCombos[rndIndex]);
         }
         platformKey = this.queue.shift();
-        return {
-            array: platformLibrary[platformKey],
-            type: this.rnd.integerInRange(0, 1) == 1 ? 'platform_sheet' : 'platform_ice_sheet',
-            y: this.rnd.integerInRange(-30, 30)
-        }
+        let y = this.rnd.integerInRange(-30, 30);
+        let type = this.rnd.integerInRange(0, 1) == 1 ? 'platform_sheet' : 'platform_ice_sheet'
+        
+        return platformLibrary[platformKey].map((index, i) => {
+            return {
+                x: i * 32,
+                y,
+                type,
+                index
+            }
+        });
     }
 }

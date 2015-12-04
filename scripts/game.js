@@ -1,5 +1,6 @@
 import {Orientation, screenDims} from './utils/screen_utils';
 import PlatformGenerator from './platform_generator';
+import CoinGenerator from './coin_generator';
 
 
 class GroupFactory {
@@ -26,6 +27,7 @@ class GroupFactory {
 
         if ( cacheItemCount < 2 ) {
             this.lastOne = this.createOne();
+            this.group.add(this.lastOne);
         }
     }
 
@@ -81,37 +83,37 @@ export default class Game {
         this.platformsFac = new GroupFactory(platforms);
         this.platformsFac.bindCreateMethod((recordLength, lastOne) => {
             let group = this.add.physicsGroup();
+            let x = lastOne ? (lastOne.x + lastOne.width + 150) : 0;
+            group.position.set(x, this.world.height - 100);
+            
             let platformData = platformGenerator.create();
-            platformData.array.forEach((index, i)=> {
-                let sprite = this.add.sprite(i * 32, platformData.y, platformData.type, index);
+            platformData.forEach((item, i)=> {
+                let sprite = this.add.sprite(item.x, item.y, item.type, item.index);
                 group.add(sprite);
             });
             group.setAll('body.allowGravity', false);
             group.setAll('body.immovable', true);
-            
-            let x = lastOne ? (lastOne.x + lastOne.width + 150) : 0;
-            group.position.set(x, this.world.height - 100);
-            this.platformsFac.group.add(group);
 
             return group;
         });
 
         let coinsGroup = this.add.physicsGroup();
+        let coinGenerator = new CoinGenerator(this.game);
         this.coinsFac = new GroupFactory(coinsGroup);
         this.coinsFac.bindCreateMethod((recordLength, lastOne) => {
             let group = this.add.physicsGroup();
             let x = lastOne ? (lastOne.x + lastOne.width + 500) : 500;
             group.position.set(x, this.world.height - 150);
-            for (let i = 0; i < 10; i++) {
-                let x = i * 30;
-                let y = 0;
-                group.create(x, y, 'coin');
-            }
+
+            let coinData = coinGenerator.create();
+            coinData.forEach((item) => {
+                group.create(item.x, item.y, item.type);
+            });
+            
             group.callAll('animations.add', 'animations', 'flash');
             group.callAll('play', null, 'flash', 10, true);
             group.setAll('body.allowGravity', false);
             group.setAll('body.immovable', true);
-            this.coinsFac.group.add(group);
 
             return group;
         });
