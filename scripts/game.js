@@ -102,8 +102,8 @@ export default class Game {
         this.coinsFac = new GroupFactory(coinsGroup);
         this.coinsFac.bindCreateMethod((recordLength, lastOne) => {
             let group = this.add.physicsGroup();
-            let x = lastOne ? (lastOne.x + lastOne.width + 500) : 500;
-            group.position.set(x, this.world.height - 150);
+            let x = lastOne ? (lastOne.x + lastOne.width + 1000) : 500;
+            group.position.set(x, this.world.height - 100);
 
             let coinData = coinGenerator.create();
             coinData.forEach((item) => {

@@ -1,14 +1,44 @@
 let map = {
-    'line': 'ccccc',
-    'twoLine': 
+'line': 'ccccc',
+'dot': 'ccc ccc ccc',
+
+'smile':
 `
-ccccc
-ccccc`,
-    'square':
+     cc  cc
+     cc  cc
+
+
+   c       c
+    c     c
+      ccc 
+`,
+
+'ball':
 `
-ccc
-ccc
-ccc`
+ ccc
+c   c
+c   c 
+ ccc`,
+
+'love':
+`
+  c    c  c       c cccc
+  c   c c  c     c  c
+  c  c   c  c   c   cccc
+  c   c c    c c    c
+  ccc  c      c     cccc
+`,
+
+'gk':
+`
+      cccc    c    c
+    c         c  c
+   c    cc    c c
+   c      c   c  c
+    c    c    c   c
+      cc      c    c
+`
+
 };
 
 let keyMap = {
@@ -38,13 +68,17 @@ export default class CoinGenerator {
     create () {
         let rndIndex = this.rnd.integerInRange(0, coinMatrix.length-1);
         let matrix = coinMatrix[rndIndex];
+        matrix = matrix.slice().reverse();
         let data = [];
         for (let j = 0; j < matrix.length; j++) {
             let row = matrix[j];
             for (let i = 0; i < row.length; i++) {
-                let x = i * 30;
-                let y = j * 30;
+                let x = i * 20;
+                let y = -j * 30;
                 let type = keyMap[row[i]];
+                if (type == undefined) {
+                    continue;
+                }
                 data.push({x, y, type});
             }
         }
