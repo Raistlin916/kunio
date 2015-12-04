@@ -4,13 +4,13 @@ let map = {
 
 'smile':
 `
-     cc  cc
-     cc  cc
+ cc   cc
+ cc   cc
 
 
-   c       c
-    c     c
-      ccc 
+c       c
+ c     c
+   ccc 
 `,
 
 'ball':

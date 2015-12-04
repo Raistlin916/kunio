@@ -7,7 +7,7 @@ class GroupFactory {
 
     constructor (group) {
         this.group = group;
-        this.record = group.length;
+        this.record = group.length || 0;
         this.lastOne = null;
     }
 
@@ -27,20 +27,23 @@ class GroupFactory {
 
         if ( cacheItemCount < 2 ) {
             this.lastOne = this.createOne();
+            if (this.lastOne == undefined) {
+                return;
+            }
             this.group.add(this.lastOne);
         }
     }
 
     bindCreateMethod (cb) {
         this.createOne = () => {
-            let oldLength = this.group.length;
             let result = cb(this.record, this.lastOne);
-            this.record += this.group.length - oldLength;
+            this.record ++;
 
             return result;
         }
-        
     }
+
+    createOne (){}
 }
 
 export default class Game {
@@ -94,29 +97,16 @@ export default class Game {
             group.setAll('body.allowGravity', false);
             group.setAll('body.immovable', true);
 
+            if (recordLength % 7 == 1) {
+                this.createCoin(group.x + group.width/2, group.y - group.height);
+            }
+
             return group;
         });
 
         let coinsGroup = this.add.physicsGroup();
-        let coinGenerator = new CoinGenerator(this.game);
+        this.coinGenerator = new CoinGenerator(this.game);
         this.coinsFac = new GroupFactory(coinsGroup);
-        this.coinsFac.bindCreateMethod((recordLength, lastOne) => {
-            let group = this.add.physicsGroup();
-            let x = lastOne ? (lastOne.x + lastOne.width + 1000) : 500;
-            group.position.set(x, this.world.height - 100);
-
-            let coinData = coinGenerator.create();
-            coinData.forEach((item) => {
-                group.create(item.x, item.y, item.type);
-            });
-            
-            group.callAll('animations.add', 'animations', 'flash');
-            group.callAll('play', null, 'flash', 10, true);
-            group.setAll('body.allowGravity', false);
-            group.setAll('body.immovable', true);
-
-            return group;
-        });
         
         this.keys = this.input.keyboard.addKeys({
             spacebar: Phaser.Keyboard.SPACEBAR
@@ -128,6 +118,25 @@ export default class Game {
         this.scoreText.fixedToCamera = true;
         this.playFail = false;
         this.cameraFollow();
+    }
+
+    createCoin (x, y) {
+        let group = this.add.physicsGroup();
+        let platform = this.platformsFac.group.children[this.platformsFac.group.length-1];
+        let platformBounds = platform.getBounds();
+        let coinData = this.coinGenerator.create();
+        coinData.forEach((item) => {
+            group.create(item.x, item.y, item.type);
+        });
+
+        group.position.set(x - group.width/2, y);
+        
+        group.callAll('animations.add', 'animations', 'flash');
+        group.callAll('play', null, 'flash', 10, true);
+        group.setAll('body.allowGravity', false);
+        group.setAll('body.immovable', true);
+        
+        this.coinsFac.group.add(group);
     }
     
     
