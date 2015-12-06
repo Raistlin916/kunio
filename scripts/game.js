@@ -119,6 +119,9 @@ export default class Game {
         this.scoreText.fixedToCamera = true;
         this.playFail = false;
         this.cameraFollow();
+        
+        this.velocityOnPlatform = 300;
+        this.setLevelInterval();
     }
 
     createCoin (x, y) {
@@ -148,7 +151,7 @@ export default class Game {
         this.bgtile.tilePosition.x = -(this.camera.x * 0.03);
 
         if (this.player.alive) {
-            this.player.body.velocity.x = 300;
+            this.player.body.velocity.x = this.velocityOnPlatform;
             this.player.animations.play('walk');
         } else {
             this.player.body.velocity.x = 0;
@@ -182,6 +185,7 @@ export default class Game {
         }
 
         if (this.inputJump() && standing && this.player.alive) {
+            this.player.body.velocity.x = 300;
             this.player.body.velocity.y = -300;
         }
         
@@ -195,6 +199,7 @@ export default class Game {
         if (this.world.width - this.player.x < this.originWidth) {
             this.world.resize(this.world.width + this.originWidth, this.world.height);
         }
+
     }
     
     dead () {
@@ -209,7 +214,7 @@ export default class Game {
     
     onCollidePlatform (player, platform) {
         if (platform.key === 'platform_ice_sheet') {
-            this.player.body.velocity.x *= 1.5;
+            this.player.body.velocity.x *= 1.2;
         }
         this.player.animations.getAnimation('walk').delay = 25000/this.player.body.velocity.x;
     }
@@ -222,6 +227,12 @@ export default class Game {
 
     cameraFollow () {
         this.camera.focusOnXY(this.player.x + this.camera.width/2 - 60, this.player.y);
+    }
+
+    setLevelInterval () {
+        this.game.time.events.loop(5000, () => {
+            this.velocityOnPlatform += 10;
+        }); 
     }
     
 }
