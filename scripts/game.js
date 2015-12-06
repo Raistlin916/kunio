@@ -211,6 +211,7 @@ export default class Game {
         if (platform.key === 'platform_ice_sheet') {
             this.player.body.velocity.x *= 1.5;
         }
+        this.player.animations.getAnimation('walk').delay = 25000/this.player.body.velocity.x;
     }
     
     eatCoin (player, coin) {
