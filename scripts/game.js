@@ -79,6 +79,7 @@ export default class Game {
         
         this.physics.arcade.enable(this.player);
         this.player.body.collideWorldBounds = true;
+        this.player.body.setSize(this.player.body.width-10, this.player.body.height, -5, 0);
         
         
         let platforms = this.add.physicsGroup();
@@ -126,7 +127,6 @@ export default class Game {
         if (platform == undefined) {
             return;
         }
-        let platformBounds = platform.getBounds();
         let coinData = this.coinGenerator.create();
         coinData.forEach((item) => {
             group.create(item.x, item.y, item.type);
@@ -220,8 +220,7 @@ export default class Game {
     }
 
     cameraFollow () {
-        this.camera.focusOnXY(this.player.x + this.camera.width/2 - 50, this.player.y);
+        this.camera.focusOnXY(this.player.x + this.camera.width/2 - 60, this.player.y);
     }
-    
     
 }
