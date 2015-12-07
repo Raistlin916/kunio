@@ -120,7 +120,7 @@ export default class Game {
         this.playFail = false;
         this.cameraFollow();
         
-        this.velocityOnPlatform = 300;
+        this.velocityOnPlatform = 30*9;
         this.setLevelInterval();
     }
 
@@ -181,11 +181,11 @@ export default class Game {
         
         let standing = this.player.body.blocked.down || (this.player.body.touching.down && touchPlatform);
         if (!standing) {
+            this.player.body.velocity.x = 300;
             this.player.animations.play('jump_' + (this.player.body.velocity.y > 0 ? 'down' : 'up') );
         }
 
         if (this.inputJump() && standing && this.player.alive) {
-            this.player.body.velocity.x = 300;
             this.player.body.velocity.y = -300;
         }
         
@@ -199,7 +199,6 @@ export default class Game {
         if (this.world.width - this.player.x < this.originWidth) {
             this.world.resize(this.world.width + this.originWidth, this.world.height);
         }
-
     }
     
     dead () {
@@ -231,7 +230,7 @@ export default class Game {
 
     setLevelInterval () {
         this.game.time.events.loop(5000, () => {
-            this.velocityOnPlatform += 10;
+            this.velocityOnPlatform += 30;
         }); 
     }
     
